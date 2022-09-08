@@ -1,4 +1,9 @@
+[![build](https://github.com/Oh-my-class/oh-my-backend/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Oh-my-class/oh-my-backend/blob/develop/.github/workflows/codeql-analysis.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Oh-my-class/oh-my-backend)
+![License](https://img.shields.io/badge/license-GNU--3.0-orange)
+
 # Oh my backend
+
 The RESTful API to the Oh My Class frontend [link to it here]
 
 ## How to make it work
