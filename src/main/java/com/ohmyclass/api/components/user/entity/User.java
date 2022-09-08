@@ -1,11 +1,10 @@
 package com.ohmyclass.api.components.user.entity;
 
+import com.ohmyclass.api.components.preferences.entity.Preferences;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -14,7 +13,19 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
 	private Long id;
 
-	//TODO Implement fields for entity
+	@Column(name = "username")
+	private String username;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "password")
+	private String password;
+
+	@OneToOne(mappedBy = "fkUser")
+	private Preferences preferences; //TODO
 }

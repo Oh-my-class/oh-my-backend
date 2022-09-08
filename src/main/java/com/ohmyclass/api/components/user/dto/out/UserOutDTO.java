@@ -1,8 +1,16 @@
 package com.ohmyclass.api.components.user.dto.out;
 
-import com.ohmyclass.api.util.Response;
+import com.ohmyclass.api.components.preferences.dto.out.PreferencesOutDTO;
+import lombok.Getter;
+import lombok.Setter;
 
-public class UserOutDTO extends Response {
+@Getter
+@Setter
+public class UserOutDTO {
 
-	//TODO Implement fields for outDTO, implement response
+	private Long id;
+
+	private String username;
+
+	private PreferencesOutDTO preferencesOut;
 }

@@ -1,6 +1,16 @@
 package com.ohmyclass.api.components.user.dto.in;
 
-public class UserInDTO {
+import com.ohmyclass.api.util.communication.InDTO;
+import lombok.Getter;
+import lombok.Setter;
 
-	//TODO Implement fields for a "normal" inDTO
+@Getter
+@Setter
+public class UserInDTO extends InDTO {
+
+	private String username;
+
+	private String email;
+
+	private String password;
 }
