@@ -27,5 +27,5 @@ public class User {
 	private String password;
 
 	@OneToOne(mappedBy = "fkUser")
-	private Preferences preferences; //TODO
+	private Preferences preferences;
 }

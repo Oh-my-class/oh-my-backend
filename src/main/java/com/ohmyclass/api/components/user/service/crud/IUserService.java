@@ -2,21 +2,22 @@ package com.ohmyclass.api.components.user.service.crud;
 
 import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
-import com.ohmyclass.api.components.user.dto.in.UserRegistrationInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
+import com.ohmyclass.api.util.communication.Response;
+import com.ohmyclass.util.other.Development;
 
 public interface IUserService {
 
-	UserOutDTO login(UserInDTO user);
+	Response<UserOutDTO> login(UserInDTO user);
 
-	UserOutDTO register(UserRegistrationInDTO user);
+	Response<UserOutDTO> register(UserInDTO user);
 
-	UserOutDTO getUser(UserInDTO user);
+	@Development
+	Response<UserOutDTO> getUser(UserInDTO user);
 
-	UserOutDTO update(UserChangeInDTO user);
+	Response<UserOutDTO> update(UserChangeInDTO user);
 
-	UserOutDTO delete(UserInDTO user);
+	Response<Boolean> delete(UserInDTO user);
 
-	UserOutDTO passwordForgotten(UserInDTO user);
-
+	Response<UserOutDTO> passwordForgotten(UserInDTO user);
 }
