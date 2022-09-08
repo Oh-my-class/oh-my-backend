@@ -10,4 +10,8 @@ import java.util.Optional;
 public interface IUserRepository extends CrudRepository<User, Long> {
 
 	Optional<User> findUserById(Long id);
+
+	Optional<User> findUserByEmailAndPassword(String email, String password);
+
+	Optional<User> findUserByUsernameOrEmail(String username, String email);
 }

@@ -1,14 +1,16 @@
 package com.ohmyclass.api.components.user.service.mapper;
 
+import com.ohmyclass.api.components.preferences.service.mapper.APreferencesMapper;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.entity.User;
-import org.mapstruct.Mapper;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = APreferencesMapper.class)
 public abstract class AUserMapper {
 
-	abstract UserOutDTO entityToOutDTO(User user);
+	@Mapping(source = "preferences", target = "preferencesOut")
+	abstract public UserOutDTO entityToOutDTO(User user);
 
-	abstract User inDtoToEntity(UserInDTO user);
+	abstract public User inDTOToEntity(UserInDTO userIn);
 }

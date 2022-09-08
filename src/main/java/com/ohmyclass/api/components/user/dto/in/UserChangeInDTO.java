@@ -1,6 +1,13 @@
 package com.ohmyclass.api.components.user.dto.in;
 
-public class UserChangeInDTO {
+import lombok.Getter;
+import lombok.Setter;
 
-	//TODO Implement fields for a userUpdateDTO
+@Getter
+@Setter
+public class UserChangeInDTO extends UserInDTO {
+
+	private String newEmail;
+
+	private String newPassword;
 }
