@@ -7,7 +7,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ "develop" ]
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '20 * * * *'
 
 jobs:
   analyze:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java' ]
+        java: [ '17' ]
 
     steps:
     - name: Checkout repository
@@ -32,7 +32,6 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        java-version: '17'
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
