@@ -27,6 +27,8 @@ public class UserService implements IUserService {
 	@Override
 	public Response<UserOutDTO> login(UserInDTO userIn) {
 
+		System.out.println("login reached");
+
 		Validate.notNull(userIn);
 
 		Predicate<Optional<User>> loginIsValid = Optional::isPresent;

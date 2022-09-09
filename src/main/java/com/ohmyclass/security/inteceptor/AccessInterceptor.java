@@ -1,4 +1,4 @@
-package com.ohmyclass.util.inteceptor;
+package com.ohmyclass.security.inteceptor;
 
 import com.ohmyclass.api.util.communication.CreateResponseService;
 import lombok.AllArgsConstructor;

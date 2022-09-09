@@ -6,6 +6,7 @@ import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.util.ApiConst;
 import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.util.other.Development;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,14 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ApiConst.URL_ACCOUNT)
 public interface IUserController {
 
-	@PostMapping(ApiConst.GET)
+	@Secured("USER")
+	@PostMapping("/login")
 	Response<UserOutDTO> login(UserInDTO user);
 
 	@PostMapping(ApiConst.GET)
 	Response<UserOutDTO> register(UserInDTO user);
 
 	@Development
-	@PostMapping(ApiConst.GET)
+	@PostMapping("/get")
 	Response<UserOutDTO> getUser(UserInDTO user);
 
 	@PostMapping(ApiConst.GET)

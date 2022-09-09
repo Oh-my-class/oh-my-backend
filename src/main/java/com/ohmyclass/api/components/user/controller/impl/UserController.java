@@ -10,14 +10,13 @@ import com.ohmyclass.api.util.communication.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @AllArgsConstructor
 public class UserController implements IUserController {
 
 	private final IUserService userService;
 
 	@Override
-	public Response<UserOutDTO> login(UserInDTO user) {
+	public Response<UserOutDTO> login(@RequestBody UserInDTO user) {
 		return userService.login(user);
 	}
 

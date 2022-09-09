@@ -1,18 +1,16 @@
 package com.ohmyclass.server.config;
 
-import com.ohmyclass.util.inteceptor.AccessInterceptor;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
-
 @Configuration
 @AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-	private final AccessInterceptor accessInterceptor;
 
+	private final AccessInterceptor accessInterceptor;
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurerAdapter() {
