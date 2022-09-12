@@ -43,11 +43,19 @@ public class UserService implements IUserService {
 
 		Validate.notNull(userIn);
 
-		Predicate<Optional<User>> userDoesNotExistAlready = Optional::isEmpty;
 
 		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail());
 
-		return getAndValidate(potentialUser, userDoesNotExistAlready);
+		if (potentialUser.isPresent())
+			CreateResponseService.newError(new Response<UserOutDTO>(), "User already exists");
+
+		User user = new User();
+		user.create(userIn.getUsername(), userIn.getEmail(), userIn.getPassword());
+		userRepo.save(user);
+
+		Predicate<Optional<User>> userSavedCorrectly = Optional::isPresent;
+
+		return getAndValidate(userRepo.findUserByEmailAndPassword(user.getEmail(), user.getPassword()), userSavedCorrectly);
 	}
 
 	@Override

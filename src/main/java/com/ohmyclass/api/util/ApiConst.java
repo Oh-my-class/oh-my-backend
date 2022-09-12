@@ -4,7 +4,7 @@ package com.ohmyclass.api.util;
 public class ApiConst {
 
 	// ? Account
-	public static final String URL_ACCOUNT = "/account";
+	public static final String URL_USER = "/user";
 	public static final String LOGIN = "/login";
 	public static final String REGISTER = "/register";
 	public static final String PW_FORGOTTEN = "/forgotten";

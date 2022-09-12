@@ -36,11 +36,17 @@ public class User {
 	@OneToOne(mappedBy = "fkUser")
 	private Preferences preferences;
 
-	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "fkAccountId")
-	@JsonBackReference
+	@OneToMany
+	@JoinColumn(name = "fkUser")
 	private List<Role> roles;
 
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
+	}
+
+	public void create(String username, String email, String password) {
+		setUsername(username);
+		setEmail(email);
+		setPassword(password);
 	}
 }

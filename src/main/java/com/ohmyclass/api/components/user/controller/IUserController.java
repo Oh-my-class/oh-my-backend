@@ -8,13 +8,12 @@ import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.util.other.Development;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ApiConst.URL_ACCOUNT)
+@RequestMapping(ApiConst.URL_USER)
 public interface IUserController {
 
 	@PostMapping(ApiConst.LOGIN)

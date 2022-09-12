@@ -1,6 +1,5 @@
 package com.ohmyclass.security;
 
-import com.ohmyclass.api.components.role.entity.Role;
 import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
 import lombok.AllArgsConstructor;
@@ -10,8 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,8 +30,8 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.flatMap(role -> role.getAuthorities().stream())
-				.map(authority -> new SimpleGrantedAuthority(authority.getAuthority())).collect(
-				Collectors.toList());
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 	}

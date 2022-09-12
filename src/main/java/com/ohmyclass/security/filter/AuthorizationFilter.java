@@ -1,6 +1,8 @@
 package com.ohmyclass.security.filter;
 
 import com.ohmyclass.security.blueprint.UsernamePasswordToken;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.BiFunction;
 
+@Component
+@AllArgsConstructor
 public class AuthorizationFilter extends CustomHttpFilter {
 
 	@Override

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "role")
 public class Role {
 
 	@Id
@@ -20,11 +19,11 @@ public class Role {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
+	@ElementCollection
 	@Column(name = "authorities")
-	private List<GrantedAuthority> authorities;
+	private List<String> authorities;
 
 	@ManyToOne
 	@JoinColumn(name = "fkUser")
-	@JsonManagedReference
 	private User fkUser;
 }

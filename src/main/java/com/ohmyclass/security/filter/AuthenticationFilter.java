@@ -2,6 +2,7 @@ package com.ohmyclass.security.filter;
 
 import com.ohmyclass.security.DatabaseUserDetailsService;
 import com.ohmyclass.security.blueprint.UsernamePasswordToken;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,18 +15,22 @@ import java.io.IOException;
 import java.util.function.Predicate;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthenticationFilter extends CustomHttpFilter {
 
-	private final DatabaseUserDetailsService dbUserDetailsService;
+	private DatabaseUserDetailsService dbUserDetailsService;
 
 	@Override
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+		System.out.println("Authenticationfilter triggered");
+
 		UsernamePasswordToken token = filterBasicAuthFrom.apply(request);
 
-		if (notAuthenticated.test(token)) {
+		System.out.println("token :   " + token.getPassword());
+
+		if (notAuthenticated(token)) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
@@ -36,7 +41,7 @@ public class AuthenticationFilter extends CustomHttpFilter {
 	/**
 	 * Either no- or wrong username/password
 	 */
-	private final Predicate<UsernamePasswordToken> notAuthenticated = (token) -> {
+	private boolean notAuthenticated(UsernamePasswordToken token) {
 
 		UserDetails userDetails = dbUserDetailsService.loadUserByUsername(token.getUsername());
 
@@ -45,5 +50,5 @@ public class AuthenticationFilter extends CustomHttpFilter {
 
 		return !userDetails.getUsername().equals(token.getUsername())
 				&& !userDetails.getPassword().equals(token.getPassword());
-	};
+	}
 }
