@@ -1,7 +1,6 @@
 package com.ohmyclass.api.components.comment.entity;
 
 import com.ohmyclass.api.components.user.entity.User;
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -31,7 +29,7 @@ public class Comment {
 	private String content;
 
 	@Column(name = "date")
-	private LocalDate date;
+	private Date date;
 
 	@OneToOne (mappedBy = "fkParentComment")
 	private Comment fkParentComment;
