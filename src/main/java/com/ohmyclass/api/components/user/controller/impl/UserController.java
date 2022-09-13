@@ -6,10 +6,12 @@ import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 
+import com.ohmyclass.api.util.ApiConst;
 import com.ohmyclass.api.util.communication.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
 @AllArgsConstructor
 public class UserController implements IUserController {
 

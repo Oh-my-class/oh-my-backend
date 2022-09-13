@@ -19,6 +19,8 @@ public class AuthorizationFilter extends CustomHttpFilter {
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+		System.out.println("Authorization filter triggered");
+
 		UsernamePasswordToken token = filterBasicAuthFrom.apply(request);
 
 		if (notAuthorized.apply(token, request)) {
@@ -26,7 +28,7 @@ public class AuthorizationFilter extends CustomHttpFilter {
 			return;
 		}
 
-		chain.doFilter(request, response); // (4)
+		chain.doFilter(request, response);
 	}
 
 	private final BiFunction<UsernamePasswordToken, HttpServletRequest, Boolean> notAuthorized = (token, request) -> {

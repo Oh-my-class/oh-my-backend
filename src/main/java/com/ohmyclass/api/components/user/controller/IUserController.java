@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public interface IUserController {
 
 	@PostMapping(ApiConst.LOGIN)
-	@Secured("USER")
+//	@Secured("USER")
 	Response<UserOutDTO> login(UserInDTO user);
 
 	@PutMapping(ApiConst.REGISTER)

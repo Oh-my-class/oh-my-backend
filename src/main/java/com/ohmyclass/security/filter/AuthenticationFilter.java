@@ -24,17 +24,20 @@ public class AuthenticationFilter extends CustomHttpFilter {
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		System.out.println("Authenticationfilter triggered");
+//		if (false /*|| !request.getRequestURI().equals("/user/register")*/) {
+			System.out.println("Authentication filter triggered");
 
-		UsernamePasswordToken token = filterBasicAuthFrom.apply(request);
+			UsernamePasswordToken token = filterBasicAuthFrom.apply(request);
 
-		System.out.println("token :   " + token.getPassword());
+			System.out.println("token :   " + token.getUsername());
+			System.out.println("token :   " + token.getPassword());
+			System.out.println(request.getRequestURI());
 
-		if (notAuthenticated(token)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-
+			if (notAuthenticated(token)) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+//		}
 		chain.doFilter(request, response);
 	}
 
@@ -45,8 +48,10 @@ public class AuthenticationFilter extends CustomHttpFilter {
 
 		UserDetails userDetails = dbUserDetailsService.loadUserByUsername(token.getUsername());
 
-		if (userDetails == null)
+		if (userDetails == null) {
+			System.out.println("USER DETAILS IS NULL");
 			return true;
+		}
 
 		return !userDetails.getUsername().equals(token.getUsername())
 				&& !userDetails.getPassword().equals(token.getPassword());

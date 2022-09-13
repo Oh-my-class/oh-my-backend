@@ -1,6 +1,5 @@
 package com.ohmyclass.api.components.role.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;

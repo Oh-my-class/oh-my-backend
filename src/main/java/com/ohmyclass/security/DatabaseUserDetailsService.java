@@ -16,15 +16,17 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DatabaseUserDetailsService implements UserDetailsService {
 
-	private IUserRepository userRepo;
+	private final IUserRepository userRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(username, null);
 
-		if (potentialUser.isEmpty())
+		if (potentialUser.isEmpty()) {
+			System.out.println("Potential user is null");
 			return null;
+		}
 
 		User user = potentialUser.get();
 
@@ -32,6 +34,8 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 				.flatMap(role -> role.getAuthorities().stream())
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
+
+		authorities.forEach(System.out::println);
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 	}
