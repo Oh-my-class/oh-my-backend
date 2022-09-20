@@ -33,6 +33,10 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fkComment", referencedColumnName = "id")
+	private List<Comment> comments;
+
 	@OneToOne(mappedBy = "fkUser")
 	private Preferences preferences;
 

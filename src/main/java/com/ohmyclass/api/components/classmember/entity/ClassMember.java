@@ -24,7 +24,7 @@ public class ClassMember {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<User> user;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private List<Role> roles;
+//	@ManyToMany(fetch = FetchType.EAGER)
+//	private List<Role> roles;
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 @Entity
 @Table(name = "Task")
 public class Task {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
