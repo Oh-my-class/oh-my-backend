@@ -1,9 +1,10 @@
 package com.ohmyclass.security.filter;
 
 import com.ohmyclass.security.DatabaseUserDetailsService;
+import com.ohmyclass.security.blueprint.ProtectedUrls;
 import com.ohmyclass.security.blueprint.UsernamePasswordToken;
+import com.ohmyclass.util.log.Logger;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.function.Predicate;
+import java.util.Arrays;
 
 @Component
 @AllArgsConstructor
@@ -24,21 +25,21 @@ public class AuthenticationFilter extends CustomHttpFilter {
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-//		if (false /*|| !request.getRequestURI().equals("/user/register")*/) {
-			System.out.println("Authentication filter triggered");
-
+		//TODO On login, write user details from BA -> body
+		if (uriIsProtected(request)) {
 			UsernamePasswordToken token = filterBasicAuthFrom.apply(request);
-
-			System.out.println("token :   " + token.getUsername());
-			System.out.println("token :   " + token.getPassword());
-			System.out.println(request.getRequestURI());
 
 			if (notAuthenticated(token)) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
-//		}
+		}
 		chain.doFilter(request, response);
+	}
+
+	private boolean uriIsProtected(HttpServletRequest request) {
+		return Arrays.stream(ProtectedUrls.values())
+				.noneMatch(uri -> uri.value().equals(request.getRequestURI()));
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class AuthenticationFilter extends CustomHttpFilter {
 		UserDetails userDetails = dbUserDetailsService.loadUserByUsername(token.getUsername());
 
 		if (userDetails == null) {
-			System.out.println("USER DETAILS IS NULL");
+			Logger.debug(this.getClass().getSimpleName(), "User not found");
 			return true;
 		}
 

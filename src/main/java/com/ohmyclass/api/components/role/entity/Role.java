@@ -1,5 +1,6 @@
 package com.ohmyclass.api.components.role.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +25,6 @@ public class Role {
 
 	@ManyToOne
 	@JoinColumn(name = "fkUser")
+	@JsonManagedReference
 	private User fkUser;
 }

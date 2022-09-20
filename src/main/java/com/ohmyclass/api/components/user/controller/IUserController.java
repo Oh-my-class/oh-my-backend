@@ -18,7 +18,7 @@ public interface IUserController {
 
 	@PostMapping(ApiConst.LOGIN)
 //	@Secured("USER")
-	Response<UserOutDTO> login(UserInDTO user);
+	Response<UserOutDTO> login(@RequestBody UserInDTO user);
 
 	@PutMapping(ApiConst.REGISTER)
 	Response<UserOutDTO> register(UserInDTO user);

@@ -23,12 +23,13 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
 		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(username, null);
 
-		if (potentialUser.isEmpty()) {
-			System.out.println("Potential user is null");
-			return null;
-		}
+		if (potentialUser.isEmpty()) // Guard
+			throw new IllegalArgumentException("User not found in database");
 
 		User user = potentialUser.get();
+
+		if (user.getRoles().isEmpty()) // Guard
+			throw new IllegalArgumentException("User lacks authorities/has no roles");
 
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.flatMap(role -> role.getAuthorities().stream())

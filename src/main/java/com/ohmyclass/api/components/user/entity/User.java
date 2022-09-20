@@ -36,8 +36,10 @@ public class User {
 	@OneToOne(mappedBy = "fkUser")
 	private Preferences preferences;
 
-	@OneToMany
-	@JoinColumn(name = "fkUser")
+	@OneToMany(cascade = {CascadeType.ALL},
+			orphanRemoval = true,
+			mappedBy = "fkUser")
+	@JsonBackReference
 	private List<Role> roles;
 
 	public void setPassword(String password) {

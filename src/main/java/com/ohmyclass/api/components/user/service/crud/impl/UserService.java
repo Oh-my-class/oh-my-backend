@@ -27,13 +27,11 @@ public class UserService implements IUserService {
 	@Override
 	public Response<UserOutDTO> login(UserInDTO userIn) {
 
-		System.out.println("login reached");
-
 		Validate.notNull(userIn);
 
 		Predicate<Optional<User>> loginIsValid = Optional::isPresent;
 
-		Optional<User> potentialUser = userRepo.findUserByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
+		Optional<User> potentialUser = userRepo.findUserByUsernameAndPassword(userIn.getUsername(), userIn.getPassword());
 
 		return getAndValidate(potentialUser, loginIsValid);
 	}
@@ -99,10 +97,10 @@ public class UserService implements IUserService {
 		userRepo.delete(userMapper.inDTOToEntity(userIn));
 
 		Response<Boolean> response = new Response<>();
-		response.setT(true);
+		response.setDto(true);
 
 		if (userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail()).isPresent()) {
-			response.setT(false);
+			response.setDto(false);
 			CreateResponseService.newError(response, "User not deleted successfully");
 		}
 
@@ -133,7 +131,7 @@ public class UserService implements IUserService {
 		Response<UserOutDTO> response = new Response<>();
 
 		if (predicate.test(potentialUser))
-			response.setT(userMapper.entityToOutDTO(potentialUser.get()));
+			response.setDto(userMapper.entityToOutDTO(potentialUser.get()));
 		else
 			CreateResponseService.newError(response, "User doesn't exist");
 

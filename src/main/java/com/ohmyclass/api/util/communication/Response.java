@@ -8,13 +8,13 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Response<T> {
+public class Response<DTO> {
 
-	private T t;
+	private DTO dto;
 
 	private ValidationResult validationResult = ValidationResult.Ok();
 
-	public Response(T t) {
-		this.t = t;
+	public Response(DTO DTO) {
+		this.dto = DTO;
 	}
 }
