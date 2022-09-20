@@ -1,5 +1,7 @@
 package com.ohmyclass.api.components.comment.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ohmyclass.api.components.task.entity.Task;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +12,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,11 +38,18 @@ public class Comment {
 	@Column(name = "date")
 	private Date date;
 
-	@OneToOne (mappedBy = "fkParentComment")
+	@ManyToOne
 	private Comment fkParentComment;
+
+	@OneToMany(mappedBy = "fkParentComment")
+	private Set<Comment> Children;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User fkUser;
 
+	@ManyToOne
+	@JoinColumn(name = "fkTask")
+	@JsonManagedReference
+	private Task fkTasks;
 
 }

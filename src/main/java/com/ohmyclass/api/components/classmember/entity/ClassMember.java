@@ -1,4 +1,6 @@
 package com.ohmyclass.api.components.classmember.entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ohmyclass.api.components.group.entity.Group;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +25,11 @@ public class ClassMember {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<User> user;
+
+	@ManyToOne
+	@JoinColumn(name = "fkGroup")
+	@JsonManagedReference
+	private Group fkGroup;
 
 //	@ManyToMany(fetch = FetchType.EAGER)
 //	private List<Role> roles;

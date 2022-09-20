@@ -1,8 +1,14 @@
 package com.ohmyclass.api.components.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ohmyclass.api.components.classmember.entity.ClassMember;
+import com.ohmyclass.api.components.comment.entity.Comment;
 import com.ohmyclass.api.components.preferences.entity.Preferences;
 import com.ohmyclass.api.components.role.entity.Role;
+import com.ohmyclass.api.components.subject.entity.Subject;
+import com.ohmyclass.api.components.task.entity.Task;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,6 +46,33 @@ public class User {
 
 	@OneToOne(mappedBy = "fkUser")
 	private Preferences preferences;
+
+	@ManyToMany
+	@JoinColumn(name = "fkClassMember")
+	@JsonManagedReference
+	private Set<ClassMember> fkClassMembers;
+
+	@OneToMany
+	@JoinColumn(name ="fkComment")
+	@JsonManagedReference
+	private Set<Comment> fkComments;
+
+	@ManyToMany
+	@JoinColumn(name = "fkSubject")
+	@JsonManagedReference
+	private Set<Subject> fkSubjects;
+
+	@OneToOne
+	@JoinColumn(name = "fkTask")
+	@JsonManagedReference
+	private Task fkTask;
+
+	@OneToOne(cascade = {CascadeType.ALL},
+			orphanRemoval = true,
+			mappedBy = "fkUser")
+	@JsonBackReference
+	private Task task ;
+
 
 	@OneToMany(cascade = {CascadeType.ALL},
 			orphanRemoval = true,
