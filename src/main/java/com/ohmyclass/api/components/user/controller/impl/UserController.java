@@ -6,6 +6,7 @@ import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 
+import com.ohmyclass.api.util.ApiConst;
 import com.ohmyclass.api.util.communication.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class UserController implements IUserController {
 	private final IUserService userService;
 
 	@Override
-	public Response<UserOutDTO> login(UserInDTO user) {
+	public Response<UserOutDTO> login(@RequestBody UserInDTO user) {
 		return userService.login(user);
 	}
 

@@ -14,4 +14,6 @@ public interface IUserRepository extends CrudRepository<User, Long> {
 	Optional<User> findUserByEmailAndPassword(String email, String password);
 
 	Optional<User> findUserByUsernameOrEmail(String username, String email);
+
+	Optional<User> findUserByUsernameAndPassword(String username, String password);
 }
