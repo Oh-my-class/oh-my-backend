@@ -2,7 +2,7 @@
 
 ## New user-role concept:
 
-![Security concept](https://github.com/Oh-my-class/oh-my-backend/tree/develop/documentation/security_concept.png)
+![Security concept](https://raw.githubusercontent.com/Oh-my-class/oh-my-backend/develop/documentation/security_concept.png)
 
 
 ### Order of validation steps
@@ -50,13 +50,14 @@ Validate for each URL called
 ### URL protection
 
 #### User
-| URI | Required rights |
-| /login | none |
-| /register | none |
-| /get | admin, can-read-user-details-of-specific-class |
-| /update | can-edit-own-details |
-| /delete | can-edit-own-details |
-| /password-forgotten | can-read-edit-own-details |
+| URI                 | Required rights                                |
+|:--------------------|:-----------------------------------------------|
+| /login              | none                                           |
+| /register           | none                                           |
+| /get                | admin, can-read-user-details-of-specific-class |
+| /update             | can-edit-own-details                           |
+| /delete             | can-edit-own-details                           |
+| /password-forgotten | can-read-edit-own-details                      |
 
 #### Group (Class)
 
