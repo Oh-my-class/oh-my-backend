@@ -13,8 +13,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class Comment {
 	private Comment fkParentComment;
 
 	@OneToMany(mappedBy = "fkParentComment")
-	private Set<Comment> children;
+	private Set<Comment> Children;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User fkUser;
