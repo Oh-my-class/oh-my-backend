@@ -1,14 +1,13 @@
 package com.ohmyclass.api.components.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.classmember.entity.ClassMember;
 import com.ohmyclass.api.components.comment.entity.Comment;
 import com.ohmyclass.api.components.preferences.entity.Preferences;
-import com.ohmyclass.api.components.role.entity.Role;
 import com.ohmyclass.api.components.subject.entity.Subject;
 import com.ohmyclass.api.components.task.entity.Task;
+import com.ohmyclass.api.components.role.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,11 +55,6 @@ public class User {
 	@JoinColumn(name ="fkComment")
 	@JsonManagedReference
 	private Set<Comment> fkComments;
-
-	@ManyToMany
-	@JoinColumn(name = "fkSubject")
-	@JsonManagedReference
-	private Set<Subject> fkSubjects;
 
 	@OneToOne
 	@JoinColumn(name = "fkTask")

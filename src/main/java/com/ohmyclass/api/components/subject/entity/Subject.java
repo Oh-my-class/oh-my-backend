@@ -25,9 +25,6 @@ public class Subject {
 	@Column(name = "name")
 	private String name;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private List<User> teachers;
-
 	@Column(name = "color", length = 6)
 	private String color;
 
