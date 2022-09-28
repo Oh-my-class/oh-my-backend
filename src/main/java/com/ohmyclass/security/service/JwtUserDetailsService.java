@@ -1,4 +1,4 @@
-package com.ohmyclass.security;
+package com.ohmyclass.security.service;
 
 import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class DatabaseUserDetailsService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
 
 	private final IUserRepository userRepo;
 
@@ -23,21 +23,26 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
 		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(username, null);
 
-		if (potentialUser.isEmpty()) // Guard
+		// Guard
+		if (potentialUser.isEmpty()) {
+
 			throw new IllegalArgumentException("User not found in database");
+		}
 
 		User user = potentialUser.get();
 
-		if (user.getRoles().isEmpty()) // Guard
+		// Guard
+		if (user.getRoles().isEmpty()) {
+
 			throw new IllegalArgumentException("User lacks authorities/has no roles");
+		}
 
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.flatMap(role -> role.getAuthorities().stream())
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 
-		authorities.forEach(System.out::println);
-
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(), user.getPassword(), authorities != null ? authorities : new ArrayList<>());
 	}
 }

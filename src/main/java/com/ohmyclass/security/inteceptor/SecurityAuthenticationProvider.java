@@ -23,6 +23,8 @@ public class SecurityAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+		//Validate userdetails from request with userdetails from database {@Link JwtUserDetailsService}
+
 		final String name = authentication.getName();
 		final String password = authentication.getCredentials().toString();
 
