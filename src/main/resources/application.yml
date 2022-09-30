@@ -39,8 +39,20 @@ constants:
     expiration:
       access_token: 600000 # 10 minutes
       refresh_token: 3600000 # 1 hour
-    unprotectedurls:
-      - "/api/login"
-      - "/api/register"
+    uriwhitelist:
+      - "/api/v1/auth/login"
+      - "/api/v1/auth/register"
+      - "/api/v1/auth/forgotten"
+      - "/api/v1/auth/refresh"
     claims:
       roles: "roles"
+  api:
+    urls:
+      baseurl: "/api/v1"
+      loginurl: "auth/login"
+      registerurl: "auth/register"
+      refreshurl: "auth/refresh-token"
+      forgottenurl: "auth/password-forgotten"
+      usergeturl: "/user/get{id}"
+      userupdateurl: "/user/update"
+      userdeleteurl: "/user/delete"

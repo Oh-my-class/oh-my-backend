@@ -3,10 +3,9 @@ package com.ohmyclass.security.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ohmyclass.server.properties.JwtConstants;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -64,20 +63,15 @@ public class JwtTokenUtil {
 				.sign(algorithm());
 	}
 
-	public String getUsernameFromToken(String token) {
-		return getClaimFromToken(token, Claims::getSubject);
+	public String getUsernameFromToken(DecodedJWT token) {
+		return token.getSignature();
 	}
 
-	public Date getExpirationDateFromToken(String token) {
-		return getClaimFromToken(token, Claims::getExpiration);
+	public Date getExpirationDateFromToken(DecodedJWT token) {
+		return token.getExpiresAt();
 	}
 
-	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-		final Claims claims = getAllClaimsFromToken(token);
-		return claimsResolver.apply(claims);
-	}
-
-	public boolean isTokenExpired(String token) {
+	public boolean isTokenExpired(DecodedJWT token) {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
@@ -86,8 +80,8 @@ public class JwtTokenUtil {
 		return token != null && token.startsWith(constants.getTokenPrefix());
 	}
 
-	private Claims getAllClaimsFromToken(String token) {
-		return Jwts.parser().setSigningKey(constants.getSecret()).parseClaimsJws(token).getBody();
+	private Map<String, Claim> getAllClaimsFromToken(DecodedJWT token) {
+		return token.getClaims();
 	}
 
 	private Algorithm algorithm() {

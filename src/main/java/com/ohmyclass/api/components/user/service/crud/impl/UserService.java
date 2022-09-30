@@ -51,43 +51,32 @@ public class UserService implements IUserService {
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-		if (tokenUtil.isValidBearer(authorizationHeader)) {
-			try {
-				DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+		// Guard
+		if (!tokenUtil.isValidBearer(authorizationHeader)) {
 
-				User user = userRepo.findByUsername(decodedJWT.getSubject())
-						.orElseThrow(() -> new ApiRequestException("User not found"));
+			throw new ApiRequestException("Invalid bearer token.");
+		}
 
-				String subject = user.getUsername();
-				String issuer = request.getRequestURI();
-				List<String> rolesClaim = user.getRoles().stream()
-						.map(Role::getName)
-						.collect(Collectors.toList());
+		try {
+			DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
 
-				String newAccessToken = tokenUtil.generateNewAccessToken(subject, issuer, rolesClaim);
+			if (tokenUtil.isTokenExpired(decodedJWT)) {
 
-				List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-						.map(role -> new SimpleGrantedAuthority(role.getName()))
-						.collect(Collectors.toList());
-
-				UsernamePasswordAuthenticationToken authenticationToken =
-						new UsernamePasswordAuthenticationToken(user.getUsername(), null, authorities);
-
-				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-				new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
-
-			} catch (Exception e) {
-				throw new ApiRequestException(e.getMessage());
+				throw new ApiRequestException("Token expired. Please login again");
 			}
 
-		} else {
-			throw new RuntimeException("Refresh token is missing");
+			String newAccessToken = createNewAccessToken(request, response, decodedJWT);
+
+			new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
+
+		} catch (Exception e) {
+			throw new ApiRequestException("Refreshing token failed");
 		}
 	}
 
 	@Override
 	public Response<UserOutDTO> getUser(String username) {
+		System.out.println(username);
 		return new Response<>(userMapper.entityToOutDTO(userRepo.findByUsername(username)
 				.orElseThrow(() -> new ApiRequestException("User not found"))));
 	}
@@ -103,8 +92,33 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response<UserOutDTO> passwordForgotten(UserInDTO user) {
+	public Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
 		return null;
+	}
+
+	private String createNewAccessToken(HttpServletRequest request, HttpServletResponse response, DecodedJWT decodedJWT) {
+
+		User user = userRepo.findByUsername(decodedJWT.getSubject())
+				.orElseThrow(() -> new ApiRequestException("User not found"));
+
+		String subject = user.getUsername();
+		String issuer = request.getRequestURI();
+		List<String> rolesClaim = user.getRoles().stream()
+				.map(Role::getName)
+				.collect(Collectors.toList());
+
+		String newAccessToken = tokenUtil.generateNewAccessToken(subject, issuer, rolesClaim);
+
+		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName()))
+				.collect(Collectors.toList());
+
+		UsernamePasswordAuthenticationToken authenticationToken =
+				new UsernamePasswordAuthenticationToken(user.getUsername(), null, authorities);
+
+		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+		return newAccessToken;
 	}
 
 	private User saveUser(User user) {

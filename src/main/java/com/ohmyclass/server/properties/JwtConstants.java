@@ -18,9 +18,9 @@ public class JwtConstants {
 
 	private String secret;
 
-	private Map<String, Integer> expiration;
+	private List<String> uriwhitelist;
 
-	private List<String> unprotectedurls;
+	private Map<String, Integer> expiration;
 
 	private Map<String, String> claims;
 }

@@ -3,6 +3,7 @@ package com.ohmyclass.api.components.user.controller;
 import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
+import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +15,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public interface IUserController {
 
-	@PutMapping("/register")
+	@PutMapping("/auth/register")
 	Response<String> register(@RequestBody UserInDTO user);
 
-	@PostMapping("/refresh-token")
+	@PostMapping("/auth/refresh")
 	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	@PutMapping("/password-forgotten")
-	Response<UserOutDTO> passwordForgotten(@RequestBody UserInDTO user);
+	@Secured("ROLE_ADMIN")
+	@PutMapping("/auth/password-forgotten")
+	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 
-	@PostMapping("/user/get")
-	Response<UserOutDTO> getUser(@RequestBody String username);
+	@GetMapping("/user/get")
+	Response<UserOutDTO> getUser(@RequestBody Request<String> usernamePayload);
 
 	@PostMapping("/user/update")
 	Response<UserOutDTO> updateUser(@RequestBody UserChangeInDTO user);

@@ -4,7 +4,9 @@ import com.ohmyclass.security.filters.JwtAuthenticationFilter;
 import com.ohmyclass.security.filters.JwtAuthorizationFilter;
 import com.ohmyclass.security.services.JwtUserDetailsService;
 import com.ohmyclass.security.util.handler.JwtAuthenticationEntryPoint;
+import com.ohmyclass.server.properties.ApiProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,11 +30,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String[] AUTH_WHITELIST = {
-		"/api/login/**",
-		"/api/register/**",
-	};
-
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	private final JwtUserDetailsService jwtUserDetailsService;
@@ -41,11 +38,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
+	private static final String[] AUTH_WHITELIST = new String[] {
+			"/api/v1/auth/login",
+			"/api/v1/auth/register",
+			"/api/v1/auth/forgotten",
+	};
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
+		jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
 		jwtAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
 
 		http.csrf().disable()

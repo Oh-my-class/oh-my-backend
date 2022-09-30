@@ -33,13 +33,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-	private JwtTokenUtil tokenUtil;
+	private final JwtTokenUtil tokenUtil;
 
 	private JwtConstants constants;
 
 	private final Predicate<HttpServletRequest> isUnprotectedUrl = (req) ->
-			constants.getUnprotectedurls().stream()
-					.anyMatch(unprotectedUri -> unprotectedUri.equals(req.getServletPath()));
+			constants.getUriwhitelist().stream().anyMatch(req.getRequestURI()::equals);
 
 
 	public JwtAuthorizationFilter(JwtTokenUtil tokenUtil, JwtConstants constants) {
@@ -56,6 +55,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 			log.debug("Security skipped: {}", request.getServletPath());
 			filterChain.doFilter(request, response);
+			return;
 		}
 
 		String authorizationHeader = request.getHeader(AUTHORIZATION);

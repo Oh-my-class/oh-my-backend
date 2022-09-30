@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "constants.jwt.unprotectedurls",
-      "type": "java.lang.String",
-      "description": "URLs, which can be accessed without authentication or authorization."
-    },
-    {
       "name": "constants.jwt.claims",
       "type": "java.lang.String",
       "description": "The name for the claim."
@@ -29,5 +24,11 @@
       "name": "constants.jwt.claims.roles",
       "type": "java.lang.String",
       "description": "The claim for the roles."
+    },
+    {
+      "name": "constants.jwt.uriwhitelist",
+      "type": "java.util.List",
+      "description": "Whitelisted URIs for the api."
     }
-  ] }
+  ]
+}

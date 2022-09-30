@@ -23,7 +23,8 @@ public class ApiExceptionHandler {
 
 		ApiException exception = new ApiException(
 				e.getMessage(),
-				e, status,
+				e.getCause(),
+				status,
 				ZonedDateTime.now(ZoneId.of("Z"))
 		);
 

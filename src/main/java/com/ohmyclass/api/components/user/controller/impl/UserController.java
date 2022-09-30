@@ -6,6 +6,7 @@ import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 
 import com.ohmyclass.api.components.user.service.crud.impl.UserService;
+import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +31,13 @@ public class UserController implements IUserController {
 	}
 
 	@Override
-	public Response<UserOutDTO> passwordForgotten(UserInDTO user) {
-		return userService.passwordForgotten(user);
+	public Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
+		return userService.passwordForgotten(request, response);
 	}
 
 	@Override
-	public Response<UserOutDTO> getUser(String username) {
-		return userService.getUser(username);
+	public Response<UserOutDTO> getUser(@RequestBody Request<String> usernamePayload) {
+		return userService.getUser(usernamePayload.getData());
 	}
 
 	@Override
