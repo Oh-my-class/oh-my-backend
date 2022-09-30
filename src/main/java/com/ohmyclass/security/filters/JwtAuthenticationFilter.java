@@ -2,7 +2,7 @@ package com.ohmyclass.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohmyclass.security.util.JwtTokenUtil;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,12 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
+/**
+ * This filter is used to validate the users credentials sent by the client.
+ *
+ * @author z-100
+ */
+@Log4j2
 @Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

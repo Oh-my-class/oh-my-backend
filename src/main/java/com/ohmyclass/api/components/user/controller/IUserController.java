@@ -3,35 +3,36 @@ package com.ohmyclass.api.components.user.controller;
 import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
-import com.ohmyclass.api.util.ApiConst;
 import com.ohmyclass.api.util.communication.Response;
-import com.ohmyclass.util.other.Development;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
-@RequestMapping(ApiConst.URL_USER)
+@RequestMapping("/api")
 public interface IUserController {
 
-	@PutMapping(ApiConst.REGISTER)
+	@PutMapping("/register")
 	Response<String> register(@RequestBody UserInDTO user);
 
-	@Development
-//	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping(ApiConst.GET)
-	Response<UserOutDTO> getUser(UserInDTO user);
+	@PostMapping("/refresh-token")
+	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	@PostMapping(ApiConst.UPDATE)
-	Response<UserOutDTO> updateUser(UserChangeInDTO user);
+	@PutMapping("/password-forgotten")
+	Response<UserOutDTO> passwordForgotten(@RequestBody UserInDTO user);
 
-	@DeleteMapping(ApiConst.DELETE)
+	@PostMapping("/user/get")
+	Response<UserOutDTO> getUser(@RequestBody String username);
+
+	@PostMapping("/user/update")
+	Response<UserOutDTO> updateUser(@RequestBody UserChangeInDTO user);
+
 	@Secured("Role_USER")
-	Response<Boolean> deleteUser(UserInDTO user);
-
-	@PutMapping(ApiConst.PW_FORGOTTEN)
-	Response<UserOutDTO> passwordForgotten(UserInDTO user);
+	@DeleteMapping("/user/delete")
+	Response<Boolean> deleteUser(@RequestBody UserInDTO user);
 }

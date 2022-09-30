@@ -1,13 +1,12 @@
 package com.ohmyclass.server.config;
 
-import com.ohmyclass.security.util.JwtAuthenticationEntryPoint;
 import com.ohmyclass.security.filters.JwtAuthenticationFilter;
 import com.ohmyclass.security.filters.JwtAuthorizationFilter;
 import com.ohmyclass.security.services.JwtUserDetailsService;
+import com.ohmyclass.security.util.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ * The application security configuration.
+ *
+ * @author z-100
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] AUTH_WHITELIST = {
 		"/api/login/**",
-		"/user/register/**",
+		"/api/register/**",
 	};
 
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

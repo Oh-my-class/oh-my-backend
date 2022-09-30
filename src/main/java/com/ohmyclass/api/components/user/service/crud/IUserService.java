@@ -7,11 +7,16 @@ import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.api.util.validation.ValidationResult;
 import com.ohmyclass.util.other.Development;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public interface IUserService {
 
 	Response<String> register(UserInDTO user);
 
-	Response<UserOutDTO> getUser(UserInDTO user);
+	void refreshToken(HttpServletRequest request, HttpServletResponse response);
+
+	Response<UserOutDTO> getUser(String username);
 
 	Response<UserOutDTO> update(UserChangeInDTO user);
 

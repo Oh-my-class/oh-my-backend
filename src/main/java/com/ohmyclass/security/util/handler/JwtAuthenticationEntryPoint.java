@@ -1,4 +1,4 @@
-package com.ohmyclass.security.util;
+package com.ohmyclass.security.util.handler;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -11,6 +11,11 @@ import java.io.Serializable;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * Handles the applications exceptions
+ *
+ * @author z-100
+ */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 

@@ -3,7 +3,6 @@ package com.ohmyclass;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,15 +24,18 @@ public class OhMyClass {
 	public static void main(String[] args) {
 		SpringApplication.run(OhMyClass.class, args);
 	}
-}
 
-@Component
-class EndpointsListener {
+	/**
+	 * This is a hack to force Spring to load all the endpoints at startup.
+	 */
+	@Component
+	static class EndpointsListener {
 
-	@EventListener
-	public void handleContextRefresh(ContextRefreshedEvent event) {
-		ApplicationContext applicationContext = event.getApplicationContext();
-		applicationContext.getBean(RequestMappingHandlerMapping.class)
-				.getHandlerMethods().forEach((key, value) -> System.out.println(key + " - " + value));
+		@EventListener
+		public void handleContextRefresh(ContextRefreshedEvent event) {
+			ApplicationContext applicationContext = event.getApplicationContext();
+			applicationContext.getBean(RequestMappingHandlerMapping.class)
+					.getHandlerMethods().forEach((key, value) -> System.out.println(key + " - " + value));
+		}
 	}
 }

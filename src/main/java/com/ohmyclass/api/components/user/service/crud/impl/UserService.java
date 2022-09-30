@@ -1,5 +1,8 @@
 package com.ohmyclass.api.components.user.service.crud.impl;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohmyclass.api.components.role.entity.Role;
 import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
@@ -7,20 +10,25 @@ import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
+import com.ohmyclass.api.exceptions.ApiRequestException;
 import com.ohmyclass.api.util.communication.Response;
-import com.ohmyclass.api.util.validation.ValidationResult;
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
-import com.ohmyclass.util.validate.Validate;
+import com.ohmyclass.security.util.JwtTokenUtil;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
+@Log4j2
 @Component
 @AllArgsConstructor
 public class UserService implements IUserService {
@@ -31,13 +39,7 @@ public class UserService implements IUserService {
 
 	private final PasswordEncoder passwordEncoder;
 
-
-	public User saveUser(User user) {
-		log.info("Saving user {}", user.getUsername());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userRepo.save(user);
-	}
-
+	private final JwtTokenUtil tokenUtil;
 
 	@Override
 	public Response<String> register(UserInDTO userIn) {
@@ -45,91 +47,69 @@ public class UserService implements IUserService {
 		return null;
 	}
 
-	public User getUser(String username) {
+	@Override
+	public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+		String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-		return userRepo.findByUsername(username);
+		if (tokenUtil.isValidBearer(authorizationHeader)) {
+			try {
+				DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+
+				User user = userRepo.findByUsername(decodedJWT.getSubject())
+						.orElseThrow(() -> new ApiRequestException("User not found"));
+
+				String subject = user.getUsername();
+				String issuer = request.getRequestURI();
+				List<String> rolesClaim = user.getRoles().stream()
+						.map(Role::getName)
+						.collect(Collectors.toList());
+
+				String newAccessToken = tokenUtil.generateNewAccessToken(subject, issuer, rolesClaim);
+
+				List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+						.map(role -> new SimpleGrantedAuthority(role.getName()))
+						.collect(Collectors.toList());
+
+				UsernamePasswordAuthenticationToken authenticationToken =
+						new UsernamePasswordAuthenticationToken(user.getUsername(), null, authorities);
+
+				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+				new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
+
+			} catch (Exception e) {
+				throw new ApiRequestException(e.getMessage());
+			}
+
+		} else {
+			throw new RuntimeException("Refresh token is missing");
+		}
 	}
 
-
 	@Override
-	public Response<UserOutDTO> getUser(UserInDTO userIn) {
-
-		Validate.notNull(userIn);
-
-		Predicate<Optional<User>> userIsPresent = Optional::isPresent;
-
-		Optional<User> potentialUser = userRepo.findByUsernameOrEmail(userIn.getUsername(), userIn.getEmail());
-
-		return potentialUser.isPresent() ? new Response<UserOutDTO>(userMapper.entityToOutDTO(potentialUser.get())) : new Response<>(null, null);
+	public Response<UserOutDTO> getUser(String username) {
+		return new Response<>(userMapper.entityToOutDTO(userRepo.findByUsername(username)
+				.orElseThrow(() -> new ApiRequestException("User not found"))));
 	}
 
 	@Override
 	public Response<UserOutDTO> update(UserChangeInDTO userIn) {
-
-		Validate.notNull(userIn);
-
-		Predicate<Optional<User>> userUpdatedCorrectly = (updatedUser) -> {
-			if (updatedUser.isEmpty())
-				return false;
-
-			return Objects.equals(updatedUser.get().getEmail(), userIn.getNewEmail())
-					&& Objects.equals(updatedUser.get().getPassword(), userIn.getPassword());
-		};
-
-		updateUserDetails(userIn);
-
-		Optional<User> potentiallyUpdatedUserFromDatabase = userRepo
-				.findByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
-
-		return null; //validateUserExists(potentiallyUpdatedUserFromDatabase, userUpdatedCorrectly);
+		return null;
 	}
 
 	@Override
 	public Response<Boolean> delete(UserInDTO userIn) {
-
-		Validate.notNull(userIn);
-
-		userRepo.delete(userMapper.inDTOToEntity(userIn));
-
-		Response<Boolean> response = new Response<>();
-		response.setData(true);
-
-//		if (userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail()).isPresent()) {
-//			response.setData(false);
-//			CreateResponseService.newError(response, "User not deleted successfully");
-//		}
-
-		return response;
+		return null;
 	}
 
 	@Override
 	public Response<UserOutDTO> passwordForgotten(UserInDTO user) {
-
-		//TODO ?? Just annotate with @Deprecated ?
 		return null;
 	}
 
-	private void updateUserDetails(UserInDTO userIn) {
-		Optional<User> potentialUser = userRepo.findByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
-
-		if (potentialUser.isPresent()) {
-			User updatedUser = potentialUser.get();
-			updatedUser.setEmail(userIn.getEmail());
-			updatedUser.setPassword(userIn.getPassword());
-
-			userRepo.save(updatedUser);
-		}
+	private User saveUser(User user) {
+		log.info("Saving user {}", user.getUsername());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return userRepo.save(user);
 	}
-
-	private void validateUserExists(Optional<User> potentialUser,
-			Predicate<Optional<User>> predicate, ValidationResult validationResult) {
-
-//		if (predicate.test(potentialUser))
-//			validationResult.add(ValidationStatus.ERROR, "User doesn't exist");
-
-		if (potentialUser.isEmpty())
-			validationResult.add(ValidationStatus.ERROR, "User doesn't exist");
-	}
-
-
 }

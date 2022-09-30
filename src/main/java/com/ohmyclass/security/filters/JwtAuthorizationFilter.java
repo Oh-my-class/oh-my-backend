@@ -1,9 +1,10 @@
 package com.ohmyclass.security.filters;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ohmyclass.api.exceptions.ApiRequestException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.server.properties.JwtConstants;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,7 +24,12 @@ import java.util.stream.Stream;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
+/**
+ * This filter is used to validate the JWT token sent by the client.
+ *
+ * @author z-100
+ */
+@Log4j2
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -30,8 +37,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 	private JwtConstants constants;
 
-	private final Predicate<HttpServletRequest> isProtectedUrl = (req) -> constants.getUnprotectedurls().stream()
-			.anyMatch(unprotectedUri -> unprotectedUri.equals(req.getServletPath()));;
+	private final Predicate<HttpServletRequest> isUnprotectedUrl = (req) ->
+			constants.getUnprotectedurls().stream()
+					.anyMatch(unprotectedUri -> unprotectedUri.equals(req.getServletPath()));
 
 
 	public JwtAuthorizationFilter(JwtTokenUtil tokenUtil, JwtConstants constants) {
@@ -44,7 +52,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		// Guard
-		if (isProtectedUrl.test(request)) {
+		if (isUnprotectedUrl.test(request)) {
 
 			log.debug("Security skipped: {}", request.getServletPath());
 			filterChain.doFilter(request, response);
@@ -53,10 +61,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
 
 		// Guard
-		if (!tokenUtil.isValid(authorizationHeader)) {
+		if (!tokenUtil.isValidBearer(authorizationHeader)) {
 
-			log.debug("Invalid bearer token: {}", authorizationHeader);
-			filterChain.doFilter(request, response);
+			throw new ApiRequestException("Invalid bearer token");
 		}
 
 		createSessionFrom(authorizationHeader);
@@ -66,14 +73,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 	private void createSessionFrom(String authorizationHeader) {
 
-		DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+		DecodedJWT decodedJWT;
+
+		try {
+			decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+		} catch (Exception e) {
+			throw new ApiRequestException("Invalid token");
+		}
 
 		String username = decodedJWT.getSubject();
 		String[] roles = decodedJWT.getClaim(constants.getClaims().get("roles")).asArray(String.class);
 
-		List<SimpleGrantedAuthority> authorities = Stream.of(roles)
+		List<SimpleGrantedAuthority> authorities = roles != null ? Stream.of(roles)
 				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+				.collect(Collectors.toList()) : new ArrayList<>();
 
 		UsernamePasswordAuthenticationToken authenticationToken =
 				new UsernamePasswordAuthenticationToken(username, null, authorities);

@@ -5,10 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ohmyclass.server.properties.JwtConstants;
-import io.jsonwebtoken.Jwt;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Util to handle JWT tokens
+ *
+ * @author z-100
+ */
 @Component
 public class JwtTokenUtil {
 
@@ -61,9 +64,30 @@ public class JwtTokenUtil {
 				.sign(algorithm());
 	}
 
-	public boolean isValid(String token) {
-		return token != null
-				&& token.startsWith(constants.getTokenPrefix());
+	public String getUsernameFromToken(String token) {
+		return getClaimFromToken(token, Claims::getSubject);
+	}
+
+	public Date getExpirationDateFromToken(String token) {
+		return getClaimFromToken(token, Claims::getExpiration);
+	}
+
+	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+		final Claims claims = getAllClaimsFromToken(token);
+		return claimsResolver.apply(claims);
+	}
+
+	public boolean isTokenExpired(String token) {
+		final Date expiration = getExpirationDateFromToken(token);
+		return expiration.before(new Date());
+	}
+
+	public boolean isValidBearer(String token) {
+		return token != null && token.startsWith(constants.getTokenPrefix());
+	}
+
+	private Claims getAllClaimsFromToken(String token) {
+		return Jwts.parser().setSigningKey(constants.getSecret()).parseClaimsJws(token).getBody();
 	}
 
 	private Algorithm algorithm() {

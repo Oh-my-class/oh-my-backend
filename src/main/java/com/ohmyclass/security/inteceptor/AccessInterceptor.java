@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Component
+@Deprecated
 @AllArgsConstructor
 public class AccessInterceptor implements HandlerInterceptor {
 

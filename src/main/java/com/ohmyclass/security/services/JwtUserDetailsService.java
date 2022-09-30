@@ -3,7 +3,7 @@ package com.ohmyclass.security.services;
 import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
+/**
+ * Retrieves a {@link User} object from the database and
+ * converts it into a {@link UserDetails} object.
+ *
+ * @author z-100
+ */
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
@@ -24,16 +30,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		final User user = userRepo.findByUsername(username);
+		final User user = userRepo.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-		// Guard
-		if (user == null) {
-
-			log.error("User not found in database");
-			throw new UsernameNotFoundException("User not found in database");
-		}
-
-		log.info("User found: {}", username);
+		log.debug("User found: {}", username);
 
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName()))
