@@ -13,6 +13,7 @@ import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
 import com.ohmyclass.api.exceptions.ApiRequestException;
 import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.security.util.JwtTokenUtil;
+import com.ohmyclass.util.validate.Validate;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,7 +45,14 @@ public class UserService implements IUserService {
 	@Override
 	public Response<String> register(UserInDTO userIn) {
 
-		return null;
+		Validate.notNull(userIn, "User cannot be null");
+
+		userRepo.save(userMapper.inDTOToEntity(userIn));
+
+		if (userRepo.findByUsername(userIn.getUsername()).isEmpty())
+			throw new ApiRequestException("Register failed");
+
+		return new Response<>("Successful registration");
 	}
 
 	@Override
