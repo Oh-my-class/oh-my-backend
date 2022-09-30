@@ -1,4 +1,4 @@
-package com.ohmyclass.security.blueprint;
+package com.ohmyclass.security.util;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
@@ -16,6 +18,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException {
 
+		response.setContentType(APPLICATION_JSON_VALUE);
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "unauthorized");
 	}
 }

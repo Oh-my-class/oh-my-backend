@@ -17,14 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ApiConst.URL_USER)
 public interface IUserController {
 
-	@PostMapping(ApiConst.LOGIN)
-	Response<UserOutDTO> login(@RequestBody UserInDTO user);
-
 	@PutMapping(ApiConst.REGISTER)
-	Response<UserOutDTO> register(UserInDTO user);
+	Response<String> register(@RequestBody UserInDTO user);
 
 	@Development
-	@PreAuthorize("hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(ApiConst.GET)
 	Response<UserOutDTO> getUser(UserInDTO user);
 

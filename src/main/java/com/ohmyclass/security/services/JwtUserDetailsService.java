@@ -1,19 +1,22 @@
-package com.ohmyclass.security.service;
+package com.ohmyclass.security.services;
 
 import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-@AllArgsConstructor
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
 	private final IUserRepository userRepo;
@@ -21,28 +24,22 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(username, null);
+		final User user = userRepo.findByUsername(username);
 
 		// Guard
-		if (potentialUser.isEmpty()) {
+		if (user == null) {
 
-			throw new IllegalArgumentException("User not found in database");
+			log.error("User not found in database");
+			throw new UsernameNotFoundException("User not found in database");
 		}
 
-		User user = potentialUser.get();
-
-		// Guard
-		if (user.getRoles().isEmpty()) {
-
-			throw new IllegalArgumentException("User lacks authorities/has no roles");
-		}
+		log.info("User found: {}", username);
 
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-				.flatMap(role -> role.getAuthorities().stream())
-				.map(SimpleGrantedAuthority::new)
+				.map(role -> new SimpleGrantedAuthority(role.getName()))
 				.collect(Collectors.toList());
 
-		return new org.springframework.security.core.userdetails.User(
-				user.getUsername(), user.getPassword(), authorities != null ? authorities : new ArrayList<>());
+		return new org.springframework.security.core.userdetails.
+				User(user.getUsername(), user.getPassword(), !authorities.isEmpty() ? authorities : new ArrayList<>());
 	}
 }

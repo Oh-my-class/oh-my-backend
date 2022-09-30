@@ -1,18 +1,14 @@
 package com.ohmyclass.server.config;
 
 import com.ohmyclass.security.inteceptor.AccessInterceptor;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.*;
 
-@Configuration
 @EnableWebMvc
-@AllArgsConstructor
+@Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-
-	private final AccessInterceptor accessInterceptor;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
@@ -21,14 +17,19 @@ public class WebConfig implements WebMvcConfigurer {
 				.maxAge(3600);
 	}
 
-	@Override
+/*	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/app/**")
 				.addResourceLocations("/static/app/");
-	}
+	}*/
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(accessInterceptor).addPathPatterns("/**");
+//		registry.addInterceptor(handlerInterceptor()).addPathPatterns("/**");
+	}
+
+	@Bean
+	public HandlerInterceptor handlerInterceptor() {
+		return new AccessInterceptor();
 	}
 }

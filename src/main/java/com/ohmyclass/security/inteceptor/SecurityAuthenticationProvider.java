@@ -23,20 +23,21 @@ public class SecurityAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+		System.out.println("==========SecurityAuthenticationProvider triggered");
 		//Validate userdetails from request with userdetails from database {@Link JwtUserDetailsService}
-
-		final String name = authentication.getName();
-		final String password = authentication.getCredentials().toString();
-
-		if (name.equals("admin") && password.equals("system")) {
-
-			final List<GrantedAuthority> grantedAuths = new ArrayList<>();
-			grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-			final UserDetails principal = new User(name, password, grantedAuths);
-
-			return new UsernamePasswordAuthenticationToken(principal, password, grantedAuths);
-		}
+//
+//		final String name = authentication.getName();
+//		final String password = authentication.getCredentials().toString();
+//
+//		if (name.equals("admin") && password.equals("system")) {
+//
+//			final List<GrantedAuthority> grantedAuths = new ArrayList<>();
+//			grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
+//
+//			final UserDetails principal = new User(name, password, grantedAuths);
+//
+//			return new UsernamePasswordAuthenticationToken(principal, password, grantedAuths);
+//		}
 
 		return null;
 	}

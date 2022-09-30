@@ -19,7 +19,7 @@ public class ValidationResult {
 		this.status = ValidationStatus.OK;
 	}
 
-	public static ValidationResult Ok() {
+	public static ValidationResult ok() {
 		return new ValidationResult();
 	}
 

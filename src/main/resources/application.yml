@@ -1,0 +1,39 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        enable_lazy_load_no_trans: 'true'
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    show-sql: 'true'
+  security:
+    filter:
+      order: '10'
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    password: root
+    username: root
+    url: jdbc:mariadb://localhost:3306/ohmyclass
+server:
+  error:
+    include-stacktrace: never
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+constants:
+  jwt:
+    tokenprefix: "Bearer "
+    secret: "very secure secret"
+    expiration:
+      access_token: 60000
+      refresh_token: 600000
+    unprotectedurls:
+      - "/api/login"
+      - "/api/register"
+    claims:
+      roles: "roles"

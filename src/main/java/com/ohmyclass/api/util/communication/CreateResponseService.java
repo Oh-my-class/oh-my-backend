@@ -8,14 +8,12 @@ import java.io.IOException;
 
 public class CreateResponseService {
 
-	public static <T extends Response> void newError(T t, String message) {
-		ValidationResult validationResult = new ValidationResult();
+	public static <T extends Response> void newError(T t, String message, ValidationResult validationResult) {
 		validationResult.add(ValidationStatus.ERROR, message);
 		t.setValidationResult(validationResult);
 	}
 
-	public static <T extends Response> void newSuccess(T t, String message) {
-		ValidationResult validationResult = new ValidationResult();
+	public static <T extends Response> void newSuccess(T t, String message, ValidationResult validationResult) {
 		validationResult.add(ValidationStatus.OK, message);
 		t.setValidationResult(validationResult);
 	}

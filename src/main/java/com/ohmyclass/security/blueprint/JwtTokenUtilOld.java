@@ -1,12 +1,14 @@
 package com.ohmyclass.security.blueprint;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.ohmyclass.api.components.user.entity.User;
+import com.ohmyclass.api.util.communication.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,11 +18,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtilOld implements Serializable {
 
 	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-	@Value("${jwt.secret}")
+//	@Value("${jwt.secret}")
 	private String secret;
 
 	//retrieve username from jwt token
@@ -53,6 +55,15 @@ public class JwtTokenUtil implements Serializable {
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
 		return doGenerateToken(claims, userDetails.getUsername());
+	}
+
+	public Response<String> generateTokenResponse(User user) {
+		Response<String> response = new Response<>();
+
+		UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+				user.getUsername(), user.getPassword(), new ArrayList<>());
+
+		return new Response<>(generateToken(userDetails));
 	}
 
 	//while creating the token -

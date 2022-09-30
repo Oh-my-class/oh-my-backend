@@ -7,54 +7,49 @@ import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.IUserRepository;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
-import com.ohmyclass.api.util.communication.CreateResponseService;
 import com.ohmyclass.api.util.communication.Response;
+import com.ohmyclass.api.util.validation.ValidationResult;
+import com.ohmyclass.api.util.validation.http.ValidationStatus;
 import com.ohmyclass.util.validate.Validate;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class UserService implements IUserService {
 
 	private final IUserRepository userRepo;
+
 	private final AUserMapper userMapper;
 
-	@Override
-	public Response<UserOutDTO> login(UserInDTO userIn) {
+	private final PasswordEncoder passwordEncoder;
 
-		Validate.notNull(userIn);
 
-		Predicate<Optional<User>> loginIsValid = Optional::isPresent;
-
-		Optional<User> potentialUser = userRepo.findUserByUsernameAndPassword(userIn.getUsername(), userIn.getPassword());
-
-		return getAndValidate(potentialUser, loginIsValid);
+	public User saveUser(User user) {
+		log.info("Saving user {}", user.getUsername());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return userRepo.save(user);
 	}
 
+
 	@Override
-	public Response<UserOutDTO> register(UserInDTO userIn) {
+	public Response<String> register(UserInDTO userIn) {
 
-		Validate.notNull(userIn);
-
-
-		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail());
-
-		if (potentialUser.isPresent())
-			CreateResponseService.newError(new Response<UserOutDTO>(), "User already exists");
-
-		User user = new User();
-		user.create(userIn.getUsername(), userIn.getEmail(), userIn.getPassword());
-		userRepo.save(user);
-
-		Predicate<Optional<User>> userSavedCorrectly = Optional::isPresent;
-
-		return getAndValidate(userRepo.findUserByEmailAndPassword(user.getEmail(), user.getPassword()), userSavedCorrectly);
+		return null;
 	}
+
+	public User getUser(String username) {
+
+		return userRepo.findByUsername(username);
+	}
+
 
 	@Override
 	public Response<UserOutDTO> getUser(UserInDTO userIn) {
@@ -63,9 +58,9 @@ public class UserService implements IUserService {
 
 		Predicate<Optional<User>> userIsPresent = Optional::isPresent;
 
-		Optional<User> potentialUser = userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail());
+		Optional<User> potentialUser = userRepo.findByUsernameOrEmail(userIn.getUsername(), userIn.getEmail());
 
-		return getAndValidate(potentialUser, userIsPresent);
+		return potentialUser.isPresent() ? new Response<UserOutDTO>(userMapper.entityToOutDTO(potentialUser.get())) : new Response<>(null, null);
 	}
 
 	@Override
@@ -84,9 +79,9 @@ public class UserService implements IUserService {
 		updateUserDetails(userIn);
 
 		Optional<User> potentiallyUpdatedUserFromDatabase = userRepo
-				.findUserByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
+				.findByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
 
-		return getAndValidate(potentiallyUpdatedUserFromDatabase, userUpdatedCorrectly);
+		return null; //validateUserExists(potentiallyUpdatedUserFromDatabase, userUpdatedCorrectly);
 	}
 
 	@Override
@@ -97,12 +92,12 @@ public class UserService implements IUserService {
 		userRepo.delete(userMapper.inDTOToEntity(userIn));
 
 		Response<Boolean> response = new Response<>();
-		response.setDto(true);
+		response.setData(true);
 
-		if (userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail()).isPresent()) {
-			response.setDto(false);
-			CreateResponseService.newError(response, "User not deleted successfully");
-		}
+//		if (userRepo.findUserByUsernameOrEmail(userIn.getUsername(), userIn.getEmail()).isPresent()) {
+//			response.setData(false);
+//			CreateResponseService.newError(response, "User not deleted successfully");
+//		}
 
 		return response;
 	}
@@ -115,7 +110,7 @@ public class UserService implements IUserService {
 	}
 
 	private void updateUserDetails(UserInDTO userIn) {
-		Optional<User> potentialUser = userRepo.findUserByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
+		Optional<User> potentialUser = userRepo.findByEmailAndPassword(userIn.getEmail(), userIn.getPassword());
 
 		if (potentialUser.isPresent()) {
 			User updatedUser = potentialUser.get();
@@ -126,15 +121,15 @@ public class UserService implements IUserService {
 		}
 	}
 
-	private Response<UserOutDTO> getAndValidate(Optional<User> potentialUser, Predicate<Optional<User>> predicate) {
+	private void validateUserExists(Optional<User> potentialUser,
+			Predicate<Optional<User>> predicate, ValidationResult validationResult) {
 
-		Response<UserOutDTO> response = new Response<>();
+//		if (predicate.test(potentialUser))
+//			validationResult.add(ValidationStatus.ERROR, "User doesn't exist");
 
-		if (predicate.test(potentialUser))
-			response.setDto(userMapper.entityToOutDTO(potentialUser.get()));
-		else
-			CreateResponseService.newError(response, "User doesn't exist");
-
-		return response;
+		if (potentialUser.isEmpty())
+			validationResult.add(ValidationStatus.ERROR, "User doesn't exist");
 	}
+
+
 }
