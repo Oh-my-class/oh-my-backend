@@ -46,8 +46,7 @@ public class UserService implements IUserService {
 	public Response<String> register(UserInDTO userIn) {
 
 		Validate.notNull(userIn, "User cannot be null");
-
-		userRepo.save(userMapper.inDTOToEntity(userIn));
+        saveUser(userMapper.inDTOToEntity(inDTO));
 
 		if (userRepo.findByUsername(userIn.getUsername()).isEmpty())
 			throw new ApiRequestException("Register failed");

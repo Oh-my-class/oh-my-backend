@@ -11,7 +11,7 @@ import org.mapstruct.*;
 public abstract class AUserMapper {
 
 	@Mapping(source = "preferences", target = "preferencesOut")
-	abstract public UserOutDTO entityToOutDTO(@NotNull User user);
+	public abstract UserOutDTO entityToOutDTO(@NotNull User user);
 
-	abstract public User inDTOToEntity(UserInDTO userIn);
+	public abstract User inDTOToEntity(UserInDTO userIn);
 }

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api/v1")
 public interface IUserController {
 
-	@PutMapping("/auth/register")
+	@PostMapping("/auth/register")
 	Response<String> register(@RequestBody UserInDTO user);
 
 	@PostMapping("/auth/refresh")
@@ -28,13 +28,13 @@ public interface IUserController {
 	@PutMapping("/auth/password-forgotten")
 	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 
-	@GetMapping("/user/get")
+	@GetMapping("/user")
 	Response<UserOutDTO> getUser(@RequestBody Request<String> usernamePayload);
 
-	@PostMapping("/user/update")
+	@PutMapping("/user")
 	Response<UserOutDTO> updateUser(@RequestBody UserChangeInDTO user);
 
 	@Secured("Role_USER")
-	@DeleteMapping("/user/delete")
+	@DeleteMapping("/user")
 	Response<Boolean> deleteUser(@RequestBody UserInDTO user);
 }
