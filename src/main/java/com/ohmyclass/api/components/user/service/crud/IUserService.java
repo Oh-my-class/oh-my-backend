@@ -4,20 +4,21 @@ import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.util.communication.Response;
-import com.ohmyclass.util.other.Development;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface IUserService {
 
-	Response<UserOutDTO> login(UserInDTO user);
+	Response<String> register(UserInDTO user);
 
-	Response<UserOutDTO> register(UserInDTO user);
+	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	@Development
-	Response<UserOutDTO> getUser(UserInDTO user);
+	Response<UserOutDTO> getUser(String username);
 
 	Response<UserOutDTO> update(UserChangeInDTO user);
 
 	Response<Boolean> delete(UserInDTO user);
 
-	Response<UserOutDTO> passwordForgotten(UserInDTO user);
+	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 }

@@ -1,18 +1,16 @@
 package com.ohmyclass.util.validate;
 
-import java.util.Optional;
+import com.ohmyclass.api.exceptions.ApiRequestException;
 
 public class Validate {
 
 	public static <T> void notNull(T t) {
 		if (t == null)
-			throw new IllegalArgumentException("Object was null");
+			throw new ApiRequestException();
 	}
 
-	public static <T extends Optional<?>> T notNull(T t) {
-		if (t == null || t.isEmpty())
-			throw new IllegalArgumentException("Object was null");
-
-		return t;
+	public static <T> void notNull(T t, String message) {
+		if (t == null)
+			throw new ApiRequestException(message);
 	}
 }

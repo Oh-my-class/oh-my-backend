@@ -3,37 +3,38 @@ package com.ohmyclass.api.components.user.controller;
 import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
-import com.ohmyclass.api.util.ApiConst;
+import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
-import com.ohmyclass.util.other.Development;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
-@RequestMapping(ApiConst.URL_USER)
+@RequestMapping("/api/v1")
 public interface IUserController {
 
-	@PostMapping(ApiConst.LOGIN)
-//	@Secured("USER")
-	Response<UserOutDTO> login(@RequestBody UserInDTO user);
+	@PostMapping("/auth/register")
+	Response<String> register(@RequestBody UserInDTO user);
 
-	@PutMapping(ApiConst.REGISTER)
-	Response<UserOutDTO> register(UserInDTO user);
+	@PostMapping("/auth/refresh")
+	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	@Development
-	@PostMapping(ApiConst.GET)
-	Response<UserOutDTO> getUser(UserInDTO user);
+	@Secured("ROLE_ADMIN")
+	@PutMapping("/auth/password-forgotten")
+	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 
-	@PostMapping(ApiConst.UPDATE)
-	Response<UserOutDTO> updateUser(UserChangeInDTO user);
+	@GetMapping("/user")
+	Response<UserOutDTO> getUser(@RequestBody Request<String> usernamePayload);
 
-	@DeleteMapping(ApiConst.DELETE)
+	@PutMapping("/user")
+	Response<UserOutDTO> updateUser(@RequestBody UserChangeInDTO user);
+
 	@Secured("Role_USER")
-	Response<Boolean> deleteUser(UserInDTO user);
-
-	@PutMapping(ApiConst.PW_FORGOTTEN)
-	Response<UserOutDTO> passwordForgotten(UserInDTO user);
+	@DeleteMapping("/user")
+	Response<Boolean> deleteUser(@RequestBody UserInDTO user);
 }

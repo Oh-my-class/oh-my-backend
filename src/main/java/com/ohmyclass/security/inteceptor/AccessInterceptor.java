@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Component
+@Deprecated
 @AllArgsConstructor
 public class AccessInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+
+		System.out.println("==========AccessInterceptor triggered");
 
 		response.setContentType("application/json");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -48,8 +50,8 @@ public class AccessInterceptor implements HandlerInterceptor {
 	}
 
 	enum UrlWhiteList { // TODO: Move to somewhere else
-		LOGIN("account/login"),
-		REGISTER("account/register");
+		LOGIN("user/login"),
+		REGISTER("user/register");
 
 		String val;
 

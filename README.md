@@ -4,26 +4,21 @@
 
 # Oh my backend
 
-The RESTful API to the Oh My Class frontend [link to it here]
+The REST-ful API of [Oh my class](https://github.com/Oh-my-class)
 
-## How to make it work
-
-### Spring Boot tomcat
+## How to start the application
 
 1. Clone repository
-2. Start MariaDB server
-   1. Create new database: "ohmyclass"
+2. Navigate to the root of the project
+   1. Run ```docker-compose up -d``` to start the database
 3. Start OhMyClass.Application
 
-### Requests
+## Send requests
 
-1. Start any app capable of web requests
-   1. (We've chosen Postman)
-2. Authentication
-   1. TODO
-3. Body
-   1. TODO, structure of request
-4. Headers
-   1. TODO
-5. What to expect
-   1. TODO, structure of response
+**Baseurl: https://localhost:8080/**
+
+| Name          | URI                             | Parameters                                | Return Value                     |
+|:------------- |:--------------------------------|:------------------------------------------|:---------------------------------|
+| Login         | POST /api/v1/auth/login         | x-www-form-urlencoded: username, password | JWT[access_token, refresh_token] |
+| Register      | POST /api/v1/auth/register      | raw: {username, password, email}          | JWT[access_token, refresh_token] |
+| Refresh token | POST /api/v1/auth/refresh-token | Auth-header: JWT refresh token            | JWT[access_token]                |
