@@ -14,7 +14,7 @@ public class CommentOutDTO {
 
 	private String content;
 
-	private Set<Comment> children;
+	private Set<CommentOutDTO> children;
 
 	private String username;
 

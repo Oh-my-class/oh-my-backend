@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class SubjectOutDTO {
 	private String name;
+
 	private String color;
 }

@@ -1,5 +1,7 @@
 package com.ohmyclass.api.components.task.dto.out;
 
+import com.ohmyclass.api.components.group.dto.out.GroupOutDTO;
+import com.ohmyclass.api.components.subject.dto.out.SubjectOutDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +20,7 @@ public class TaskOutDTO {
 
 	private Date editDate;
 
-	//TODO: Subject
+	private SubjectOutDTO subject;
 
-	//TODO: Group
+	private GroupOutDTO group;
 }

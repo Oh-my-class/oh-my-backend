@@ -1,7 +1,7 @@
 package com.ohmyclass.api.components.group.dto.out;
 
-import com.ohmyclass.api.components.subject.entity.Subject;
-import com.ohmyclass.api.components.task.entity.Task;
+import com.ohmyclass.api.components.subject.dto.out.SubjectOutDTO;
+import com.ohmyclass.api.components.task.dto.out.TaskOutDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ public class GroupOutDTO {
 
 	private String name;
 
-	private Set<Subject> subjects;
+	private Set<SubjectOutDTO> subjects;
 
-	private Set<Task> tasks;
+	private Set<TaskOutDTO> tasks;
 }
