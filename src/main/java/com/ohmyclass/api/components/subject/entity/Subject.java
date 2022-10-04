@@ -31,10 +31,8 @@ public class Subject {
 	@Column(name = "color", length = 6)
 	private String color;
 
-	@ManyToMany
-	@JoinColumn(name = "fkGroup")
-	@JsonManagedReference
-	private Set<Group> fkGroups;
+	@Column(name = "fkGroup")
+	private Group fkGroup;
 
 	@OneToMany(cascade = {CascadeType.ALL},
 			orphanRemoval = true,

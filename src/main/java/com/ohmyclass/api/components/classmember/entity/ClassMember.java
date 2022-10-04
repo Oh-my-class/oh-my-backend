@@ -7,10 +7,8 @@ import lombok.Setter;
 import java.util.Set;
 
 import javax.persistence.*;
-import java.util.List;
 
 import com.ohmyclass.api.components.user.entity.User;
-import com.ohmyclass.api.components.role.entity.Role;
 
 @Getter
 @Setter
