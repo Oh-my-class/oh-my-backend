@@ -1,85 +1,53 @@
 package com.ohmyclass.server.config;
 
-import com.ohmyclass.security.filters.JwtAuthenticationFilter;
-import com.ohmyclass.security.filters.JwtAuthorizationFilter;
-import com.ohmyclass.security.services.JwtUserDetailsService;
-import com.ohmyclass.security.util.handler.JwtAuthenticationEntryPoint;
-import com.ohmyclass.server.properties.ApiProperties;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import com.ohmyclass.security.filter.AuthenticationFilter;
+import com.ohmyclass.security.filter.AuthorizationFilter;
+import com.ohmyclass.security.inteceptor.SecurityAuthenticationProvider;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
-/**
- * The application security configuration.
- *
- * @author z-100
- */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final SecurityAuthenticationProvider authProvider;
 
-	private final JwtUserDetailsService jwtUserDetailsService;
+	private final AuthenticationFilter authenticationFilter;
 
-	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-	private final JwtAuthorizationFilter jwtAuthorizationFilter;
-
-	private static final String[] AUTH_WHITELIST = new String[] {
-			"/api/v1/auth/login",
-			"/api/v1/auth/register",
-			"/api/v1/auth/forgotten",
-	};
-
+	private final AuthorizationFilter authorizationFilter;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
-		jwtAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
-
 		http.csrf().disable()
-				.sessionManagement()
-					.sessionCreationPolicy(STATELESS)
-					.and()
-				.exceptionHandling()
-					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-					.and()
-				.antMatcher("/")
+				.antMatcher("/user")
 					.authorizeRequests()
-						.antMatchers(AUTH_WHITELIST).permitAll()
-						.anyRequest().authenticated()
+						.antMatchers("/login").permitAll()
+						.antMatchers("/register").permitAll()
+					.anyRequest().authenticated()
 					.and()
-				.addFilter(jwtAuthenticationFilter)
-				.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-	}
-
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(bCryptPasswordEncoder());
+				.httpBasic()
+					.and()
+					.addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class);
 	}
 
 	@Bean
-	public PasswordEncoder bCryptPasswordEncoder() {
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
 	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+	protected void configure(AuthenticationManagerBuilder auth) {
+		auth.authenticationProvider(authProvider);
 	}
 }
