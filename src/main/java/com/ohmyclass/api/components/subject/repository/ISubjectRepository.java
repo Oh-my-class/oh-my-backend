@@ -11,6 +11,6 @@ public interface ISubjectRepository extends CrudRepository<Subject, Long> {
 
     Optional<Subject> findSubjectById(Long id);
 
-    Optional<Subject> getSubjectByGroup(Group group);
+    Optional<Subject> findSubjectByGroupId(Long id);
     
 }

@@ -12,5 +12,5 @@ public interface IGroupRepository extends CrudRepository<Group, Long> {
 
 	Optional<Group> findGroupById(Long id);
 
-	Optional<Group> getAllGroupsByUserId(Long userId);
+	Optional<Group> findAllGroupsByUserId(Long userId);
 }

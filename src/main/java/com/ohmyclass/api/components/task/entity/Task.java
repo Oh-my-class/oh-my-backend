@@ -1,9 +1,11 @@
 package com.ohmyclass.api.components.task.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ohmyclass.api.components.classmember.entity.GroupMember;
 import com.ohmyclass.api.components.comment.entity.Comment;
 import com.ohmyclass.api.components.group.entity.Group;
 import com.ohmyclass.api.components.subject.entity.Subject;
+import com.ohmyclass.api.components.tick.entity.Tick;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +38,7 @@ public class Task {
 	@Column(name = "title")
 	private String title;
 
-	@Column(name = "Description")
+	@Column(name = "description")
 	private String description;
 
 	@Column(name = "dueDate")
@@ -49,9 +51,9 @@ public class Task {
 	private Date editDate;
 
 	@OneToOne
-	@JoinColumn(name = "fkUser")
+	@JoinColumn(name = "fkGroupMember")
 	@JsonManagedReference
-	private User fkUser;
+	private GroupMember groupMember;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Comment> comments;
@@ -59,11 +61,15 @@ public class Task {
 	@ManyToOne
 	@JoinColumn(name = "fkSubject")
 	@JsonManagedReference
-	private Subject fkSubject;
+	private Subject subject;
 
 	@ManyToOne
 	@JoinColumn(name = "fkGroup")
 	@JsonManagedReference
-	private Group fkGroup;
+	private Group group;
 
+	@OneToOne
+	@JoinColumn(name = "fkTick")
+	@JsonManagedReference
+	private Tick tick;
 }

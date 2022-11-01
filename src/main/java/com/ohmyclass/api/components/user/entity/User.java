@@ -2,18 +2,29 @@ package com.ohmyclass.api.components.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.ohmyclass.api.components.classmember.entity.ClassMember;
+import com.ohmyclass.api.components.classmember.entity.GroupMember;
 import com.ohmyclass.api.components.comment.entity.Comment;
 import com.ohmyclass.api.components.preferences.entity.Preferences;
+import com.ohmyclass.api.components.role.entity.Role;
 import com.ohmyclass.api.components.subject.entity.Subject;
 import com.ohmyclass.api.components.task.entity.Task;
-import com.ohmyclass.api.components.role.entity.Role;
+import com.ohmyclass.api.components.tick.entity.Tick;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
 
@@ -49,12 +60,12 @@ public class User {
 	@ManyToMany
 	@JoinColumn(name = "fkClassMember")
 	@JsonManagedReference
-	private Set<ClassMember> fkClassMembers;
+	private Set<GroupMember> classMembers;
 
-	@OneToMany
-	@JoinColumn(name ="fkComment")
+	@ManyToMany
+	@JoinColumn(name = "fkSubject")
 	@JsonManagedReference
-	private Set<Comment> fkComments;
+	private Set<Subject> subjects;
 
 	@OneToOne
 	@JoinColumn(name = "fkTask")
@@ -65,7 +76,7 @@ public class User {
 			orphanRemoval = true,
 			mappedBy = "fkUser")
 	@JsonBackReference
-	private Task task ;
+	private Task task;
 
 
 	@OneToMany(cascade = {CascadeType.ALL},
@@ -73,6 +84,11 @@ public class User {
 			mappedBy = "fkUser")
 	@JsonBackReference
 	private List<Role> roles;
+
+	@OneToOne
+	@JoinColumn(name = "fkTick")
+	@JsonManagedReference
+	private Tick tick;
 
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);

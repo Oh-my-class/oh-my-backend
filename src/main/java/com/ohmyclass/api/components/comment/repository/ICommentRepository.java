@@ -1,6 +1,7 @@
 package com.ohmyclass.api.components.comment.repository;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +14,5 @@ public interface ICommentRepository extends CrudRepository<Comment, Long> {
 
     Optional<Comment> findCommentById(Long id);
 
-    Optional<Comment> findCommentOrderByDate(Date date);
+    Optional<List<Comment>> findAllCommentsByClassIdOrderByDate(Long classId);
 }

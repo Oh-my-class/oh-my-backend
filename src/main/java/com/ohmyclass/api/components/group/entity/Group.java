@@ -1,7 +1,7 @@
 package com.ohmyclass.api.components.group.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.ohmyclass.api.components.classmember.entity.ClassMember;
+import com.ohmyclass.api.components.classmember.entity.GroupMember;
 import com.ohmyclass.api.components.subject.entity.Subject;
 import com.ohmyclass.api.components.task.entity.Task;
 import lombok.Getter;
@@ -33,9 +33,9 @@ public class Group {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER)
-	private Set<ClassMember> classmembers;
+	private Set<GroupMember> groupMembers;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER)
 	private Set<Subject> subjects;
 
 	@OneToMany(cascade = {CascadeType.ALL},
