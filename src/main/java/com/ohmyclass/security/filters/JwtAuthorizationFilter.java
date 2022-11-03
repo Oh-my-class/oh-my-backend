@@ -37,8 +37,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 	private JwtConstants constants;
 
-	private final Predicate<HttpServletRequest> isUnprotectedUrl = (req) ->
-			constants.getUriwhitelist().stream().anyMatch(req.getRequestURI()::equals);
+	private final Predicate<String> isUnprotectedUrl = (req) ->
+			constants.getUriwhitelist().stream().anyMatch(req::contains);
 
 
 	public JwtAuthorizationFilter(JwtTokenUtil tokenUtil, JwtConstants constants) {
@@ -47,18 +47,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	}
 
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		String path = request.getRequestURI();
+		System.out.println("Should not filter: " + path);
+		return isUnprotectedUrl.test(path);
+	}
+
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		// Guard
-		if (isUnprotectedUrl.test(request)) {
-
-			log.debug("Security skipped: {}", request.getServletPath());
-			filterChain.doFilter(request, response);
-			return;
-		}
-
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+		System.out.println(request.getRequestURI());
 
 		// Guard
 		if (!tokenUtil.isValidBearer(authorizationHeader)) {

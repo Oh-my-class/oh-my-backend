@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	private final JwtTokenUtil tokenUtil;
 
 	public JwtAuthenticationFilter(@Lazy AuthenticationManager authenticationManager, JwtTokenUtil tokenUtil) {
+
 		super.setAuthenticationManager(authenticationManager);
 		this.tokenUtil = tokenUtil;
 	}
@@ -45,8 +46,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-
-		log.debug("Username: {}\nPassword: {}", username, password);
 
 		UsernamePasswordAuthenticationToken authenticationToken =
 				new UsernamePasswordAuthenticationToken(username, password);
@@ -66,11 +65,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		String subject = user.getUsername();
 		String issuer = request.getRequestURI();
-		List<String> claim = user.getAuthorities().stream()
+		List<String> rolesClaim = user.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
 
-		Map<String, String> tokens = tokenUtil.generateNewTokenMap(subject, issuer, claim);
+		Map<String, String> tokens = tokenUtil.generateNewTokenMap(subject, issuer, rolesClaim);
 
 		log.debug("Return tokens of {}", subject);
 
