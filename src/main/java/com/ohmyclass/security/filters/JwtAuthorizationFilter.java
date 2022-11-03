@@ -42,15 +42,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
 	public JwtAuthorizationFilter(JwtTokenUtil tokenUtil, JwtConstants constants) {
+
 		this.tokenUtil = tokenUtil;
 		this.constants = constants;
 	}
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		String path = request.getRequestURI();
-		System.out.println("Should not filter: " + path);
-		return isUnprotectedUrl.test(path);
+
+		return isUnprotectedUrl.test(request.getRequestURI());
 	}
 
 	@Override
@@ -58,8 +58,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
-
-		System.out.println(request.getRequestURI());
 
 		// Guard
 		if (!tokenUtil.isValidBearer(authorizationHeader)) {
