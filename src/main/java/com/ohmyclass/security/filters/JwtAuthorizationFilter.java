@@ -50,6 +50,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
 
+		System.out.println(request.getRequestURI());
+
 		return isUnprotectedUrl.test(request.getRequestURI());
 	}
 
@@ -61,6 +63,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 		// Guard
 		if (!tokenUtil.isValidBearer(authorizationHeader)) {
+
+			System.out.println(authorizationHeader);
 
 			throw new ApiRequestException("Invalid bearer token");
 		}

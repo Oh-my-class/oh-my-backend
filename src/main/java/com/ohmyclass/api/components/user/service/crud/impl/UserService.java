@@ -45,11 +45,11 @@ public class UserService implements IUserService {
 	private final JwtTokenUtil tokenUtil;
 
 	@Override
-	public Response<Map<String, String>> register(Request<UserInDTO> inDTO) {
+	public Map<String, String> register(UserInDTO inDTO) {
 
-		Validate.notNull( "No Payload found", inDTO, inDTO.getPayload());
+//		Validate.notNull( "No Payload found", inDTO, inDTO.getPayload());
 
-		UserInDTO userIn = inDTO.getPayload();
+		UserInDTO userIn = inDTO/*.getPayload()*/;
 
 		if (userRepo.findByUsername(userIn.getUsername()).isPresent())
 			throw new ApiRequestException("Username already exists");
@@ -65,7 +65,7 @@ public class UserService implements IUserService {
 				.map(Role::getName)
 				.collect(Collectors.toList());
 
-		return new Response<>(tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles));
+		return tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles);
 	}
 
 	@Override
@@ -96,27 +96,26 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response<UserOutDTO> getUser(String username) {
+	public UserOutDTO getUser(String username) {
 
 		Validate.notNull(username);
 
-		return new Response<>(userMapper.entityToOutDTO(userRepo.findByUsername(username)
-				.orElseThrow(() -> new ApiRequestException("User not found"))));
+		return userMapper.entityToOutDTO(userRepo.findByUsername(username)
+				.orElseThrow(() -> new ApiRequestException("User not found")));
 	}
 
 	@Override
-	public Response<UserOutDTO> update(Request<UserChangeInDTO> userIn) {
+	public UserOutDTO update(Request<UserChangeInDTO> userIn) {
 		return null;
 	}
 
 	@Override
-	public Response<Boolean> delete(Request<UserInDTO> userIn) {
+	public Boolean delete(Request<UserInDTO> userIn) {
 		return null;
 	}
 
 	@Override
-	public Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
-		return null;
+	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
 	}
 
 	private String createNewAccessToken(HttpServletRequest request, DecodedJWT decodedJWT) {

@@ -5,9 +5,10 @@ import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 
-import com.ohmyclass.api.components.user.service.crud.impl.UserService;
+import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
+import com.ohmyclass.api.util.validation.ValidationResult;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserController implements IUserController {
 
-	private final UserService userService;
+	private final IUserService userService;
 
 	@Override
-	public Response<Map<String, String>> register(Request<UserInDTO> registration) {
-		return userService.register(registration);
+	public Response<Map<String, String>> register(UserInDTO registration) {
+		return new Response<>(userService.register(registration), ValidationResult.ok());
 	}
 
 	@Override
@@ -32,22 +33,22 @@ public class UserController implements IUserController {
 	}
 
 	@Override
-	public Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
-		return userService.passwordForgotten(request, response);
+	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
+		userService.passwordForgotten(request, response);
 	}
 
 	@Override
 	public Response<UserOutDTO> getUser(String username) {
-		return userService.getUser(username);
+		return new Response<>(userService.getUser(username), ValidationResult.ok());
 	}
 
 	@Override
 	public Response<UserOutDTO> updateUser(Request<UserChangeInDTO> userChangeIn) {
-		return userService.update(userChangeIn);
+		return new Response<>(userService.update(userChangeIn), ValidationResult.ok());
 	}
 
 	@Override
 	public Response<Boolean> deleteUser(Request<UserInDTO> user) {
-		return userService.delete(user);
+		return new Response<>(userService.delete(user), ValidationResult.ok());
 	}
 }

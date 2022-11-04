@@ -54,7 +54,7 @@ constants:
       - "/swagger-resources/"
       - "/swagger-ui"
     claims:
-      roles: "roles"
+      roles: "rls"
   api:
     urls:
       baseurl: "/api/v1"

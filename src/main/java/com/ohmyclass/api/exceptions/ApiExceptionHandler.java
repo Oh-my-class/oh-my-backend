@@ -1,7 +1,8 @@
 package com.ohmyclass.api.exceptions;
 
+import com.ohmyclass.api.util.communication.Response;
+import com.ohmyclass.api.util.validation.ValidationResult;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -17,17 +18,20 @@ import java.time.ZonedDateTime;
 public class ApiExceptionHandler {
 
 	@ExceptionHandler(value = {ApiRequestException.class})
-	public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
+	public Response<ApiException> handleApiRequestException(ApiRequestException e) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
 		ApiException exception = new ApiException(
 				e.getMessage(),
-				e.getCause(),
+				null,
 				status,
 				ZonedDateTime.now(ZoneId.of("Z"))
 		);
 
-		return new ResponseEntity<>(exception, status);
+		ValidationResult validationResult = ValidationResult.ok();
+		validationResult.add(exception.toValidationResultEntry());
+
+		return new Response<>(exception, validationResult);
 	}
 }

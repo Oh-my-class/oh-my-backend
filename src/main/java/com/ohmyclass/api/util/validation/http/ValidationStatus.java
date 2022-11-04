@@ -8,7 +8,20 @@ public enum ValidationStatus {
 	WARNING(400, Series.SUCCESSFUL, "Warning"),
 	ERROR(401, Series.SERVER_ERROR, "Error");
 
+	int value;
+	Series series;
+	String reasonPhrase;
+
 	ValidationStatus(int value, Series series, String reasonPhrase) {}
+
+	public static ValidationStatus resolveTypeByHttpStatusId(int id) {
+		for (ValidationStatus status : values()) {
+			if (status.value == id) {
+				return status;
+			}
+		}
+		return null;
+	}
 
 	@Getter
 	public enum Series {
