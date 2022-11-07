@@ -1,5 +1,6 @@
 package com.ohmyclass;
 
+import com.ohmyclass.server.properties.ApiProperties;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,11 +18,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class OhMyClass {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(OhMyClass.class, args);
 	}
 
 	@EventListener
 	public void handleContextRefresh(ContextRefreshedEvent event) {
+
 		// This is a hack to force Spring to load all the endpoints at startup.
 		event.getApplicationContext().getBean(RequestMappingHandlerMapping.class).getHandlerMethods()
 				.forEach((key, value) -> System.out.println(key + " - " + value));
