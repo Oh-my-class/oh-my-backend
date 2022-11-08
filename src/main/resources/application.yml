@@ -6,7 +6,7 @@ spring:
         enable_lazy_load_no_trans: 'true'
     hibernate:
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
       ddl-auto: update
     show-sql: 'true'
   security:
