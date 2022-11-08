@@ -1,6 +1,7 @@
-package com.ohmyclass.api.components.comment.entity;
+package com.ohmyclass.api.components.classmember.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ohmyclass.api.components.group.entity.Group;
 import com.ohmyclass.api.components.task.entity.Task;
 import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
@@ -15,41 +16,35 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Date;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "comment")
-public class Comment {
-
+@Table(name = "groupmember")
+public class GroupMember {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
-	private long id;
+	private Long id;
 
-	@Column(name = "content")
-	private String content;
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<User> user;
 
-	@Column(name = "date")
-	private Date date;
-
-	@ManyToOne
-	private Comment parentComment;
-
-	@OneToMany(mappedBy = "fkParentComment")
-	private Set<Comment> children;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
-
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "fkTask")
 	@JsonManagedReference
-	private Task tasks;
+	private Task task;
+
+	@ManyToOne
+	@JoinColumn(name = "fkGroup")
+	@JsonManagedReference
+	private Group group;
+
+
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	private List<Role> roles;
 
 }
