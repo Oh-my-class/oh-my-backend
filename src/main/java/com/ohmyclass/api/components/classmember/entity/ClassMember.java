@@ -25,9 +25,9 @@ public class ClassMember {
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "fkGroup")
+	@JoinColumn(name = "group")
 	@JsonManagedReference
-	private Group fkGroup;
+	private Group group;
 
 //	@ManyToMany(fetch = FetchType.LAZY)
 //	private List<Role> roles;

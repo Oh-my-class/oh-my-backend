@@ -52,7 +52,7 @@ public class Task {
 	private Date editDate;
 
 	@OneToOne
-	@JoinColumn(name = "fkGroupMember")
+	@JoinColumn(name = "groupMember")
 	@JsonManagedReference
 	private GroupMember groupMember;
 
@@ -60,17 +60,22 @@ public class Task {
 	private List<Comment> comments;
 
 	@ManyToOne
-	@JoinColumn(name = "fkSubject")
+	@JoinColumn(name = "subject")
 	@JsonManagedReference
 	private Subject subject;
 
 	@ManyToOne
-	@JoinColumn(name = "fkGroup")
+	@JoinColumn(name = "user")
+	@JsonManagedReference
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "group")
 	@JsonManagedReference
 	private Group group;
 
 	@OneToMany
-	@JoinColumn(name = "fkTick")
+	@JoinColumn(name = "tick")
 	@JsonManagedReference
 	private Set<Tick> ticks;
 }

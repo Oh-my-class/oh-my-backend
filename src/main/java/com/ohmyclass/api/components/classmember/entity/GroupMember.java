@@ -34,12 +34,12 @@ public class GroupMember {
 	private Set<User> user;
 
 	@OneToOne
-	@JoinColumn(name = "fkTask")
+	@JoinColumn(name = "task")
 	@JsonManagedReference
 	private Task task;
 
 	@ManyToOne
-	@JoinColumn(name = "fkGroup")
+	@JoinColumn(name = "group")
 	@JsonManagedReference
 	private Group group;
 
