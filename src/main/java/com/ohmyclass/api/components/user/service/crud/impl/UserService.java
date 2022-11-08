@@ -11,6 +11,7 @@ import com.ohmyclass.api.components.user.repository.IUserRepository;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
 import com.ohmyclass.api.exceptions.ApiRequestException;
+import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.util.validate.Validate;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -43,15 +45,27 @@ public class UserService implements IUserService {
 	private final JwtTokenUtil tokenUtil;
 
 	@Override
-	public Response<String> register(UserInDTO userIn) {
+	public Response<Map<String, String>> register(Request<UserInDTO> inDTO) {
 
-		Validate.notNull(userIn, "User cannot be null");
-        saveUser(userMapper.inDTOToEntity(userIn));
+		Validate.notNull( "No Payload found", inDTO, inDTO.getPayload());
+
+		UserInDTO userIn = inDTO.getPayload();
+
+		if (userRepo.findByUsername(userIn.getUsername()).isPresent())
+			throw new ApiRequestException("Username already exists");
+
+		User user = userMapper.inDTOToEntity(userIn);
+		user.addRole(new Role("ROLE_USER"));
+		saveUser(user);
 
 		if (userRepo.findByUsername(userIn.getUsername()).isEmpty())
 			throw new ApiRequestException("Register failed");
 
-		return new Response<>("Successful registration");
+		List<String> roles = user.getRoles().stream()
+				.map(Role::getName)
+				.collect(Collectors.toList());
+
+		return new Response<>(tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles));
 	}
 
 	@Override
@@ -72,7 +86,7 @@ public class UserService implements IUserService {
 				throw new ApiRequestException("Token expired. Please login again");
 			}
 
-			String newAccessToken = createNewAccessToken(request, response, decodedJWT);
+			String newAccessToken = createNewAccessToken(request, decodedJWT);
 
 			new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
 
@@ -83,18 +97,20 @@ public class UserService implements IUserService {
 
 	@Override
 	public Response<UserOutDTO> getUser(String username) {
-		System.out.println(username);
+
+		Validate.notNull(username);
+
 		return new Response<>(userMapper.entityToOutDTO(userRepo.findByUsername(username)
 				.orElseThrow(() -> new ApiRequestException("User not found"))));
 	}
 
 	@Override
-	public Response<UserOutDTO> update(UserChangeInDTO userIn) {
+	public Response<UserOutDTO> update(Request<UserChangeInDTO> userIn) {
 		return null;
 	}
 
 	@Override
-	public Response<Boolean> delete(UserInDTO userIn) {
+	public Response<Boolean> delete(Request<UserInDTO> userIn) {
 		return null;
 	}
 
@@ -103,10 +119,10 @@ public class UserService implements IUserService {
 		return null;
 	}
 
-	private String createNewAccessToken(HttpServletRequest request, HttpServletResponse response, DecodedJWT decodedJWT) {
+	private String createNewAccessToken(HttpServletRequest request, DecodedJWT decodedJWT) {
 
 		User user = userRepo.findByUsername(decodedJWT.getSubject())
-				.orElseThrow(() -> new ApiRequestException("User not found"));
+				.orElseThrow(() -> new ApiRequestException("User not found for token refresh"));
 
 		String subject = user.getUsername();
 		String issuer = request.getRequestURI();
