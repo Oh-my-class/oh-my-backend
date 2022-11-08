@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class UserController implements IUserController {
 	private final UserService userService;
 
 	@Override
-	public Response<String> register(UserInDTO registration) {
+	public Response<Map<String, String>> register(Request<UserInDTO> registration) {
 		return userService.register(registration);
 	}
 
@@ -36,17 +37,17 @@ public class UserController implements IUserController {
 	}
 
 	@Override
-	public Response<UserOutDTO> getUser(@RequestBody Request<String> usernamePayload) {
-		return userService.getUser(usernamePayload.getData());
+	public Response<UserOutDTO> getUser(String username) {
+		return userService.getUser(username);
 	}
 
 	@Override
-	public Response<UserOutDTO> updateUser(UserChangeInDTO userChangeIn) {
+	public Response<UserOutDTO> updateUser(Request<UserChangeInDTO> userChangeIn) {
 		return userService.update(userChangeIn);
 	}
 
 	@Override
-	public Response<Boolean> deleteUser(UserInDTO user) {
+	public Response<Boolean> deleteUser(Request<UserInDTO> user) {
 		return userService.delete(user);
 	}
 }
