@@ -93,20 +93,16 @@ public class User {
 	@JsonManagedReference
 	private Tick tick;
 
-	public void setPassword(String password) {
-		this.password = PASSWORD_ENCODER.encode(password);
-  }
-
 	public void addRole(Role role) {
 		if (roles == null)
 			roles = new ArrayList<>();
 
+		role.setUser(this);
 		roles.add(role);
-		role.setFkUser(this);
 	}
 
 	public void removeRole(Role role) {
 		roles.remove(role);
-		role.setFkUser(null);
+		role = null;
 	}
 }

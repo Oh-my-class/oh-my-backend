@@ -47,7 +47,7 @@ public class RoleController implements IRoleController {
 		Optional<User> user = userRepository.findByUsername(username);
 
 		Role role = new Role();
-		role.setFkUser(user.get());
+		role.setUser(user.get());
 		role.setName("ROLE_ADMIN");
 
 		return Response.ok(roleRepository.save(role) != null);
