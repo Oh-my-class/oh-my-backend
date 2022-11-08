@@ -1,22 +1,15 @@
 package com.ohmyclass.api.components.group.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.classmember.entity.GroupMember;
 import com.ohmyclass.api.components.subject.entity.Subject;
 import com.ohmyclass.api.components.task.entity.Task;
+import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 @Getter
@@ -40,9 +33,14 @@ public class Group {
 
 	@OneToMany(cascade = {CascadeType.ALL},
 			orphanRemoval = true,
-			mappedBy = "fkGroup")
+			mappedBy = "group")
 	@JsonBackReference
 	private Set<Task> tasks;
+
+	@ManyToOne
+	@JoinColumn(name = "user")
+	@JsonManagedReference
+	private User user;
 
 //	@ManyToMany(fetch = FetchType.LAZY)
 //	private Set<Role>  roles;

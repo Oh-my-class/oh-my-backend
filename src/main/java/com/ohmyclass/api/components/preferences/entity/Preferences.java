@@ -21,8 +21,8 @@ public class Preferences {
 	private boolean darkmodeEnabled;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "fkUser", referencedColumnName = "id")
-	private User fkUser;
+	@JoinColumn(name = "user", referencedColumnName = "id")
+	private User user;
 }
 
 

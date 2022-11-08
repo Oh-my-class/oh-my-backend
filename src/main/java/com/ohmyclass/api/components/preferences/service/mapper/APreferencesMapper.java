@@ -9,9 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public abstract class APreferencesMapper {
 
-	@Mapping(source = "fkUser.id", target = "fkUserId")
+//	@Mapping(source = "user.id", target = "userId")
 	abstract public PreferencesOutDTO entityToOutDTO(Preferences entity);
 
-	@Mapping(source = "fkUserId", target = "fkUser.id")
+//	@Mapping(source = "userId", target = "user.id")
 	abstract public Preferences inDTOToEntity(PreferencesInDTO inDTO);
 }

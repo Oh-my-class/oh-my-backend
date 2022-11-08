@@ -13,10 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.Set;
@@ -41,15 +39,15 @@ public class Comment {
 	@ManyToOne
 	private Comment parentComment;
 
-	@OneToMany(mappedBy = "fkParentComment")
+	@OneToMany(mappedBy = "parentComment")
 	private Set<Comment> children;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "fkTask")
+	@JoinColumn(name = "task")
 	@JsonManagedReference
-	private Task tasks;
+	private Task task;
 
 }

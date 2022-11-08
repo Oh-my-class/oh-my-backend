@@ -11,9 +11,6 @@ import com.ohmyclass.api.components.task.entity.Task;
 import com.ohmyclass.api.components.tick.entity.Tick;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,7 +24,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -54,43 +50,35 @@ public class User {
 	private String password;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "fkComment", referencedColumnName = "id")
+	@JoinColumn(name = "comments", referencedColumnName = "id")
 	private List<Comment> comments;
 
-	@OneToOne(mappedBy = "fkUser")
+	@OneToOne(mappedBy = "user")
 	private Preferences preferences;
 
 	@ManyToMany
-	@JoinColumn(name = "fkClassMember")
+	@JoinColumn(name = "classMember")
 	@JsonManagedReference
 	private Set<GroupMember> classMembers;
 
 	@ManyToMany
-	@JoinColumn(name = "fkSubject")
+	@JoinColumn(name = "subjects")
 	@JsonManagedReference
 	private Set<Subject> subjects;
 
-	@OneToOne
-	@JoinColumn(name = "fkTask")
-	@JsonManagedReference
-	private Task fkTask;
-
-	@OneToOne(cascade = {CascadeType.ALL},
+	@OneToMany(cascade = {CascadeType.ALL},
 			orphanRemoval = true,
-			mappedBy = "fkUser")
+			mappedBy = "user")
 	@JsonBackReference
-	private Task task;
-
+	private Set<Task> tasks;
 
 	@OneToMany(cascade = {CascadeType.ALL},
 			orphanRemoval = true,
-			mappedBy = "fkUser")
+			mappedBy = "user")
 	@JsonBackReference
 	private List<Role> roles;
 
-	@OneToOne
-	@JoinColumn(name = "fkTick")
-	@JsonManagedReference
+	@OneToOne(mappedBy = "user")
 	private Tick tick;
 
 	public void addRole(Role role) {

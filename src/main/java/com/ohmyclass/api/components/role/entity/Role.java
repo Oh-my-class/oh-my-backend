@@ -41,7 +41,7 @@ public class Role {
 	private List<String> authorities;
 
 	@ManyToOne
-	@JoinColumn(name = "fkUser")
+	@JoinColumn(name = "user")
 	@JsonManagedReference
 	private User user;
 
