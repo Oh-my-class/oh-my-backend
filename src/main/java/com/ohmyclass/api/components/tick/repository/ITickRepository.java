@@ -1,13 +1,11 @@
 package com.ohmyclass.api.components.tick.repository;
 
-import java.util.Optional;
-
+import com.ohmyclass.api.components.tick.entity.Tick;
 import org.springframework.data.repository.CrudRepository;
 
-import com.ohmyclass.api.components.tick.entity.Tick;
+import java.util.Optional;
 
-public interface ITickRepository extends CrudRepository<Tick, Long>  {
-    
+public interface ITickRepository extends CrudRepository<Tick, Long> {
     Optional<Tick> findTickById(Long id);
 
 }
