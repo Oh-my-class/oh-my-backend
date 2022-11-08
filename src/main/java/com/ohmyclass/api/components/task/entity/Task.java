@@ -23,6 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -68,8 +69,8 @@ public class Task {
 	@JsonManagedReference
 	private Group group;
 
-	@OneToOne
+	@OneToMany
 	@JoinColumn(name = "fkTick")
 	@JsonManagedReference
-	private Tick tick;
+	private Set<Tick> ticks;
 }
