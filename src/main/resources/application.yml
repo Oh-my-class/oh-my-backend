@@ -16,7 +16,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     password: root
     username: root
-    url: jdbc:mariadb://localhost:3306/ohmyclass
+    url: jdbc:mariadb://localhost:3307/ohmyclass
 springdoc:
   api-docs:
     enabled: true
@@ -25,7 +25,9 @@ springdoc:
     enabled: true
 server:
   error:
-    include-stacktrace: always
+    include-message: always
+    include-stacktrace: never
+    include-exception: false
 logging:
   level:
     org:

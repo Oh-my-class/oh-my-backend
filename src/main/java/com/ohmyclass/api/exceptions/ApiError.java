@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public record ApiException(String message, Throwable cause, HttpStatus status, ZonedDateTime timestamp) {
+public record ApiError(String message, HttpStatus status, Throwable cause, ZonedDateTime timestamp) {
 
 	public ValidationResultEntry toValidationResultEntry() {
-		return new ValidationResultEntry(ValidationStatus.resolveTypeByHttpStatusId(status.value()), message, null/*, List.of(cause.getCause().toString())*/);
+		return new ValidationResultEntry(ValidationStatus.resolveTypeByHttpStatusId(status.value()), message);
 	}
 }
