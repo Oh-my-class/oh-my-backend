@@ -24,9 +24,9 @@ public class Tick {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	private Task task;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	private User user;
 }

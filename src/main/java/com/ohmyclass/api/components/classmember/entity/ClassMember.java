@@ -21,7 +21,7 @@ public class ClassMember {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<User> user;
 
 	@ManyToOne
@@ -29,7 +29,7 @@ public class ClassMember {
 	@JsonManagedReference
 	private Group fkGroup;
 
-//	@ManyToMany(fetch = FetchType.EAGER)
+//	@ManyToMany(fetch = FetchType.LAZY)
 //	private List<Role> roles;
 
 }

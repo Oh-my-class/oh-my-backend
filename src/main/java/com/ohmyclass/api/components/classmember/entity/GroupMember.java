@@ -30,7 +30,7 @@ public class GroupMember {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<User> user;
 
 	@OneToOne
@@ -44,7 +44,7 @@ public class GroupMember {
 	private Group group;
 
 
-//	@ManyToMany(fetch = FetchType.EAGER)
+//	@ManyToMany(fetch = FetchType.LAZY)
 //	private List<Role> roles;
 
 }

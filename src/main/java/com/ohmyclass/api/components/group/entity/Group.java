@@ -32,10 +32,10 @@ public class Group {
 	@Column(name = "name")
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<GroupMember> groupMembers;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Subject> subjects;
 
 	@OneToMany(cascade = {CascadeType.ALL},
@@ -44,7 +44,7 @@ public class Group {
 	@JsonBackReference
 	private Set<Task> tasks;
 
-//	@ManyToMany(fetch = FetchType.EAGER)
+//	@ManyToMany(fetch = FetchType.LAZY)
 //	private Set<Role>  roles;
     
 }
