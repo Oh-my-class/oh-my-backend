@@ -1,9 +1,14 @@
 package com.ohmyclass.api.exceptions;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -13,21 +18,30 @@ import java.time.ZonedDateTime;
  *
  * @author z-100
  */
-@ControllerAdvice
-public class ApiExceptionHandler {
+@RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = {ApiRequestException.class})
+	@ExceptionHandler(value = { ApiRequestException.class })
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
 
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-
-		ApiException exception = new ApiException(
+		ApiError error = new ApiError(
 				e.getMessage(),
-				e.getCause(),
-				status,
+				HttpStatus.BAD_REQUEST,
+				null,
 				ZonedDateTime.now(ZoneId.of("Z"))
 		);
 
-		return new ResponseEntity<>(exception, status);
+//		ValidationResult validationResult = ValidationResult.ok();
+//		validationResult.add(error.toValidationResultEntry());
+
+		return buildResponseEntity(error);
+	}
+
+	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
+
+		return new ResponseEntity<>(apiError, apiError.status());
 	}
 }

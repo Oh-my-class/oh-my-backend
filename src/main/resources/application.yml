@@ -6,7 +6,7 @@ spring:
         enable_lazy_load_no_trans: 'true'
     hibernate:
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
       ddl-auto: update
     show-sql: 'true'
   security:
@@ -16,7 +16,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     password: root
     username: root
-    url: jdbc:mariadb://localhost:3306/ohmyclass
+    url: jdbc:mariadb://localhost:3307/ohmyclass
 springdoc:
   api-docs:
     enabled: true
@@ -25,7 +25,9 @@ springdoc:
     enabled: true
 server:
   error:
-    include-stacktrace: always
+    include-message: always
+    include-stacktrace: never
+    include-exception: false
 logging:
   level:
     org:
@@ -54,14 +56,14 @@ constants:
       - "/swagger-resources/"
       - "/swagger-ui"
     claims:
-      roles: "roles"
+      roles: "rls"
   api:
     urls:
-      baseurl: "/api/v1"
-      loginurl: "auth/login"
-      registerurl: "auth/register"
-      refreshurl: "auth/refresh-token"
-      forgottenurl: "auth/password-forgotten"
-      usergeturl: "/user/get{id}"
-      userupdateurl: "/user/update"
-      userdeleteurl: "/user/delete"
+      base_url: "/api/v1"
+      login_url: "auth/login"
+      register_url: "auth/register"
+      refresh_url: "auth/refresh-token"
+      forgotten_pw_url: "auth/password-forgotten"
+      user_get_url: "/user/get{id}"
+      user_update_url: "/user/update"
+      user_delete_url: "/user/delete"

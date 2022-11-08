@@ -1,5 +1,6 @@
 package com.ohmyclass.server.config;
 
+import com.ohmyclass.api.exceptions.ApiExceptionHandler;
 import com.ohmyclass.security.filters.JwtAuthenticationFilter;
 import com.ohmyclass.security.filters.JwtAuthorizationFilter;
 import com.ohmyclass.security.services.JwtUserDetailsService;

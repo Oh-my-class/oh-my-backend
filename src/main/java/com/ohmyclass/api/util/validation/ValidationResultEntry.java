@@ -10,8 +10,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ValidationResultEntry {
 
 	private ValidationStatus status;
@@ -19,6 +17,17 @@ public class ValidationResultEntry {
 	private String reason;
 
 	private List<String> details;
+
+	public ValidationResultEntry(ValidationStatus status, String reason) {
+		this.status = status;
+		this.reason = reason;
+	}
+
+	public ValidationResultEntry(ValidationStatus status, String reason, List<String> details) {
+		this.status = status;
+		this.reason = reason;
+		this.details = details;
+	}
 
 	private boolean isInfo() {
 		return this.status == ValidationStatus.INFO;

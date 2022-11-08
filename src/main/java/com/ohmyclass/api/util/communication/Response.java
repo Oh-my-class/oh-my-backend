@@ -8,19 +8,23 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Response<Data> {
+public class Response<Payload> {
 
-	private Data data;
+	private Payload payload;
 
 	private ValidationResult validationResult;
 
-	public Response(Data data) {
-		this.data = data;
+	public Response(Payload payload) {
+		this.payload = payload;
 		this.validationResult = ValidationResult.ok();
 	}
 
-	public Response(Data data, ValidationResult validationResult) {
-		this.data = data;
+	public Response(Payload payload, ValidationResult validationResult) {
+		this.payload = payload;
 		this.validationResult = validationResult;
+	}
+
+	public static <Data> Response<Data> ok(Data payload) {
+		return new Response<>(payload);
 	}
 }

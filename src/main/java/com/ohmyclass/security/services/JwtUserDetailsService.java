@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,8 +30,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		final User user = userRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		Optional<User> potentialUser = userRepo.findByUsername(username);
+
+		User user = potentialUser.isEmpty() ? loadByEmail(username) : potentialUser.get();
 
 		log.debug("User found: {}", username);
 
@@ -39,7 +40,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 				.map(role -> new SimpleGrantedAuthority(role.getName()))
 				.collect(Collectors.toList());
 
-		return new org.springframework.security.core.userdetails.
-				User(user.getUsername(), user.getPassword(), !authorities.isEmpty() ? authorities : new ArrayList<>());
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+	}
+
+	private User loadByEmail(String email) throws UsernameNotFoundException {
+
+		// Exception only thrown here, as this is executed anyway.
+		return userRepo.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
 }

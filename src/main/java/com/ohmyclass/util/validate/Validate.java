@@ -2,15 +2,20 @@ package com.ohmyclass.util.validate;
 
 import com.ohmyclass.api.exceptions.ApiRequestException;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Validate {
 
-	public static <T> void notNull(T t) {
-		if (t == null)
+	@SafeVarargs
+	public static <T> void notNull(T... t) {
+		if (Arrays.stream(t).anyMatch(Objects::isNull))
 			throw new ApiRequestException();
 	}
 
-	public static <T> void notNull(T t, String message) {
-		if (t == null)
+	@SafeVarargs
+	public static <T> void notNull(String message, T... t) {
+		if (Arrays.stream(t).anyMatch(Objects::isNull))
 			throw new ApiRequestException(message);
 	}
 }

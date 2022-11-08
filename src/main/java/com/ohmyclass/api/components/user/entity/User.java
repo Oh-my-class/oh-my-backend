@@ -11,6 +11,7 @@ import com.ohmyclass.api.components.task.entity.Task;
 import com.ohmyclass.api.components.tick.entity.Tick;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,6 +26,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +38,6 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class User {
-
-	private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,11 +95,18 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
+  }
+
+	public void addRole(Role role) {
+		if (roles == null)
+			roles = new ArrayList<>();
+
+		roles.add(role);
+		role.setFkUser(this);
 	}
 
-	public void create(String username, String email, String password) {
-		setUsername(username);
-		setEmail(email);
-		setPassword(password);
+	public void removeRole(Role role) {
+		roles.remove(role);
+		role.setFkUser(null);
 	}
 }

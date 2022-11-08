@@ -22,10 +22,19 @@ import java.util.List;
 @Table(name = "role")
 public class Role {
 
+  public Role() {}
+  
+  public Role(String name) {
+		this.name = name;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
+
+	@Column(name = "name")
+	private String name;
 
 	@ElementCollection
 	@Column(name = "authorities")
@@ -35,4 +44,9 @@ public class Role {
 	@JoinColumn(name = "fkUser")
 	@JsonManagedReference
 	private User user;
+
+	/*	@ManyToOne
+	@JoinColumn(name = "fkGroup")
+	@JsonManagedReference
+	private Group fkGroup;*/
 }
