@@ -21,8 +21,8 @@ public class ClassMember {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<User> user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "fkGroup")
