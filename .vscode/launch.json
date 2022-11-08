@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "mainClass": "com.ohmyclass.OhMyClass",
+      "request": "launch",
+      "name": "Debug backend",
+      "console": "internalConsole"
+    },
+  ]
+}
