@@ -5,10 +5,12 @@ import com.ohmyclass.api.components.preferences.entity.Preferences;
 import com.ohmyclass.api.components.role.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,8 +18,6 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class User {
-
-	private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +42,16 @@ public class User {
 	@JsonBackReference
 	private List<Role> roles;
 
-	public void setPassword(String password) {
-		this.password = PASSWORD_ENCODER.encode(password);
+	public void addRole(Role role) {
+		if (roles == null)
+			roles = new ArrayList<>();
+
+		roles.add(role);
+		role.setFkUser(this);
 	}
 
-	public void create(String username, String email, String password) {
-		setUsername(username);
-		setEmail(email);
-		setPassword(password);
+	public void removeRole(Role role) {
+		roles.remove(role);
+		role.setFkUser(null);
 	}
 }

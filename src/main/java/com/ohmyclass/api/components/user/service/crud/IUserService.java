@@ -12,15 +12,15 @@ import java.util.Map;
 
 public interface IUserService {
 
-	Response<Map<String, String>> register(Request<UserInDTO> user);
+	Map<String, String> register(UserInDTO user);
 
 	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	Response<UserOutDTO> getUser(String username);
+	UserOutDTO getUser(String username);
 
-	Response<UserOutDTO> update(Request<UserChangeInDTO> user);
+	UserOutDTO update(Request<UserChangeInDTO> user);
 
-	Response<Boolean> delete(Request<UserInDTO> user);
+	Boolean delete(Request<UserInDTO> user);
 
-	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
+	void passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 }

@@ -12,7 +12,6 @@ import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
 import com.ohmyclass.api.exceptions.ApiRequestException;
 import com.ohmyclass.api.util.communication.Request;
-import com.ohmyclass.api.util.communication.Response;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.util.validate.Validate;
 import lombok.AllArgsConstructor;
@@ -25,8 +24,11 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,27 +47,26 @@ public class UserService implements IUserService {
 	private final JwtTokenUtil tokenUtil;
 
 	@Override
-	public Response<Map<String, String>> register(Request<UserInDTO> inDTO) {
+	@Transactional
+	public Map<String, String> register(UserInDTO inDTO) {
 
-		Validate.notNull( "No Payload found", inDTO, inDTO.getPayload());
+		Validate.notNull( "No Payload found", inDTO);
 
-		UserInDTO userIn = inDTO.getPayload();
-
-		if (userRepo.findByUsername(userIn.getUsername()).isPresent())
+		if (userRepo.findByUsername(inDTO.getUsername()).isPresent())
 			throw new ApiRequestException("Username already exists");
 
-		User user = userMapper.inDTOToEntity(userIn);
+		User user = userMapper.inDTOToEntity(inDTO);
 		user.addRole(new Role("ROLE_USER"));
-		saveUser(user);
+		Optional<User> user1 = saveUser(user);
 
-		if (userRepo.findByUsername(userIn.getUsername()).isEmpty())
-			throw new ApiRequestException("Register failed");
+		if (user1.isEmpty())
+			throw new ApiRequestException("Registration failed");
 
 		List<String> roles = user.getRoles().stream()
 				.map(Role::getName)
 				.collect(Collectors.toList());
 
-		return new Response<>(tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles));
+		return tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles);
 	}
 
 	@Override
@@ -96,27 +97,26 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response<UserOutDTO> getUser(String username) {
+	public UserOutDTO getUser(String username) {
 
 		Validate.notNull(username);
 
-		return new Response<>(userMapper.entityToOutDTO(userRepo.findByUsername(username)
-				.orElseThrow(() -> new ApiRequestException("User not found"))));
+		return userMapper.entityToOutDTO(userRepo.findByUsername(username)
+				.orElseThrow(() -> new ApiRequestException("User not found")));
 	}
 
 	@Override
-	public Response<UserOutDTO> update(Request<UserChangeInDTO> userIn) {
+	public UserOutDTO update(Request<UserChangeInDTO> userIn) {
 		return null;
 	}
 
 	@Override
-	public Response<Boolean> delete(Request<UserInDTO> userIn) {
+	public Boolean delete(Request<UserInDTO> userIn) {
 		return null;
 	}
 
 	@Override
-	public Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
-		return null;
+	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
 	}
 
 	private String createNewAccessToken(HttpServletRequest request, DecodedJWT decodedJWT) {
@@ -144,9 +144,12 @@ public class UserService implements IUserService {
 		return newAccessToken;
 	}
 
-	private User saveUser(User user) {
+	private Optional<User> saveUser(User user) {
+
 		log.info("Saving user {}", user.getUsername());
+
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userRepo.save(user);
+
+		return Optional.of(userRepo.save(user));
 	}
 }

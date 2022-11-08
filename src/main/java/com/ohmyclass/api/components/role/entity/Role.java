@@ -28,8 +28,15 @@ public class Role {
 	@JsonManagedReference
 	private User fkUser;
 
-/*	@ManyToOne
+	/*	@ManyToOne
 	@JoinColumn(name = "fkGroup")
 	@JsonManagedReference
 	private Group fkGroup;*/
+
+
+	public Role() {}
+
+	public Role(String name) {
+		this.name = name;
+	}
 }

@@ -64,27 +64,34 @@ public class JwtTokenUtil {
 	}
 
 	public String getUsernameFromToken(DecodedJWT token) {
+
 		return token.getSignature();
 	}
 
 	public Date getExpirationDateFromToken(DecodedJWT token) {
+
 		return token.getExpiresAt();
 	}
 
 	public boolean isTokenExpired(DecodedJWT token) {
+
 		final Date expiration = getExpirationDateFromToken(token);
+
 		return expiration.before(new Date());
 	}
 
 	public boolean isValidBearer(String token) {
+
 		return token != null && token.startsWith(constants.getTokenPrefix());
 	}
 
 	private Map<String, Claim> getAllClaimsFromToken(DecodedJWT token) {
+
 		return token.getClaims();
 	}
 
 	private Algorithm algorithm() {
-		return Algorithm.HMAC256(constants.getSecret().getBytes(StandardCharsets.UTF_8));
+
+		return Algorithm.HMAC512(constants.getSecret().getBytes(StandardCharsets.UTF_8));
 	}
 }

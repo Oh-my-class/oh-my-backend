@@ -29,7 +29,7 @@ public interface IUserController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = Map.class)) })
 	@ApiResponse(responseCode = "401", description = "Authentication failed")
 	@ApiResponse(responseCode = "500", description = "General server error")
-	Response<Map<String, String>> register(@RequestBody Request<UserInDTO> registration);
+	Response<Map<String, String>> register(@RequestBody UserInDTO registration);
 
 	@PostMapping("/auth/refresh")
 	@Operation(summary = "Refresh the access token")
@@ -39,16 +39,16 @@ public interface IUserController {
 	@ApiResponse(responseCode = "500", description = "General server error")
 	void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-	@Secured("Role_USER")
+	@Secured("ROLE_USER")
 	@PutMapping("/auth/password-forgotten")
 	@Operation(summary = "Request a URL to change the password")
 	@ApiResponse(responseCode = "200", description = "Email has been sent", content = {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = UserOutDTO.class)) })
 	@ApiResponse(responseCode = "401", description = "Authentication failed")
 	@ApiResponse(responseCode = "500", description = "General server error")
-	Response<UserOutDTO> passwordForgotten(HttpServletRequest request, HttpServletResponse response);
+	void passwordForgotten(HttpServletRequest request, HttpServletResponse response);
 
-	@Secured("Role_ADMIN")
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/user/{username}")
 	@Operation(summary = "Get a user from the database")
 	@ApiResponse(responseCode = "200", description = "User", content = {
@@ -57,7 +57,7 @@ public interface IUserController {
 	@ApiResponse(responseCode = "500", description = "General server error")
 	Response<UserOutDTO> getUser(@PathVariable String username);
 
-	@Secured("Role_USER")
+	@Secured("ROLE_USER")
 	@PutMapping("/user")
 	@Operation(summary = "Edit user details in database")
 	@ApiResponse(responseCode = "200", description = "The updated user", content = {
@@ -66,7 +66,7 @@ public interface IUserController {
 	@ApiResponse(responseCode = "500", description = "General server error")
 	Response<UserOutDTO> updateUser(@RequestBody Request<UserChangeInDTO> userChangeIn);
 
-	@Secured("Role_USER")
+	@Secured("ROLE_USER")
 	@DeleteMapping("/user")
 	@Operation(summary = "Delete a user from the database")
 	@ApiResponse(responseCode = "200", description = "The success of the operation", content = {

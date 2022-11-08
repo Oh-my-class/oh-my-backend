@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Request<Data> {
+public class Request<Payload> {
 
-	private Data data;
+	private Payload payload;
 }
