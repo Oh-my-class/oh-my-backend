@@ -2,23 +2,46 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Oh-my-class/oh-my-backend)
 ![License](https://img.shields.io/badge/license-GNU--3.0-orange)
 
-# Oh my backend
+# Oh-My-Backend
 
-The REST-ful API of [Oh my class](https://github.com/Oh-my-class)
+**Designed _for_ students _by_ students**
 
-## How to start the application
+The REST-API of [_Oh-My-Web_](https://github.com/Oh-my-class/Oh-my-web)
 
-1. Clone repository
-2. Navigate to the root of the project
-   1. Run ```docker-compose up -d``` to start the database
-3. Start OhMyClass.Application
+## What is _OMB_?
 
-## Send requests
+_Oh-My-Backend_ is a standalone **opensource** REST-API class-management system.
 
-**Baseurl: https://localhost:8080/**
+In other words:
 
-| Name          | URI                             | Parameters                                | Return Value                     |
-|:------------- |:--------------------------------|:------------------------------------------|:---------------------------------|
-| Login         | POST /api/v1/auth/login         | x-www-form-urlencoded: username, password | JWT[access_token, refresh_token] |
-| Register      | POST /api/v1/auth/register      | raw: {username, password, email}          | JWT[access_token, refresh_token] |
-| Refresh token | POST /api/v1/auth/refresh-token | Auth-header: JWT refresh token            | JWT[access_token]                |
+You can build your own implementation for a client or just use the already existing [_Oh-my-Web_](https://github.com/Oh-my-class/oh-my-web);
+<br/>
+A web-app built with React, TypeScript and lots of love! :heart:
+
+## How-to's
+
+### Start the REST-API
+
+#### 1. Clone repository
+
+#### 2. Start the database server
+
+1. Open a Terminal and navigate to the project's root
+2. Run `docker compose up -d` to start the database
+3. Or: Feel free to use any MySQL database
+   - Just make sure it's running on `___:3306`
+   - If this is not the case, edit the `spring.datasource.url` to match your port in the`application.yml` file
+
+#### 3. Start OhMyClass.Application
+
+- Via IntelliJ:
+   - Locate `OhMyClass.java` and hit the run button
+- Via maven:
+   - Locate the project's root and run `mvn spring-boot:run`
+
+### Send requests
+
+- Postman
+   - Import the requests and environment files into postman `/documentation/postman`
+- [...]
+   - [...]

@@ -1,0 +1,51 @@
+{
+	"id": "fe4d7c93-080f-4f09-bf2c-a7614c5405dc",
+	"name": "oh-my-class",
+	"values": [
+		{
+			"key": "defaultUserUsername",
+			"value": "admin",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "defaultUserPassword",
+			"value": "admin",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "ohmyclassBaseUrl",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accessTokenExpiry",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "env",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-11-09T11:08:52.442Z",
+	"_postman_exported_using": "Postman/10.0.42"
+}

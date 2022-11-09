@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "40f95c49-9149-4f77-82b5-c5ade96eef1b",
+		"name": "Oh my class",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18736142"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set role to user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Requests\r",
+							"const echoPostRequest = {\r",
+							"  url: pm.environment.get(\"ohmyclassBaseUrl\") + \"/api/v1/auth/login\",\r",
+							"  method: \"POST\",\r",
+							"  header: \"Content-Type:application/x-www-form-urlencoded\",\r",
+							"  body: {\r",
+							"    mode: \"urlencoded\",\r",
+							"    urlencoded: [\r",
+							"      { key: \"username\", value: pm.environment.get(\"defaultUserUsername\") },\r",
+							"      { key: \"password\", value: pm.environment.get(\"defaultUserPassword\") },\r",
+							"    ],\r",
+							"  },\r",
+							"};\r",
+							"\r",
+							"getToken();\r",
+							"\r",
+							"if (pm.environment.get(\"access_token\") === null) {\r",
+							"\r",
+							"  pm.environment.get(\"variable_key\");\r",
+							"  pm.environment.get(\"variable_key\");\r",
+							"\r",
+							"  console.log(\"Token or refresh token are missing\");\r",
+							"\r",
+							"  getToken();\r",
+							"} else if (pm.environment.get(\"accessTokenExpiry\") <= new Date().getTime()) {\r",
+							"  console.log(\"Token is expired\");\r",
+							"} else {\r",
+							"  console.log(\"Token and expiry date are all good\");\r",
+							"}\r",
+							"\r",
+							"function getToken() {\r",
+							"  pm.sendRequest(echoPostRequest, function (err, res) {\r",
+							"    console.log(err ? err : res.json());\r",
+							"    if (err === null) {\r",
+							"      console.log(\"Saving the token and expiry date\");\r",
+							"      var responseJson = res.json();\r",
+							"      pm.environment.set(\"access_token\", responseJson.access_token);\r",
+							"      pm.environment.set(\"refresh_token\", responseJson.refresh_token);\r",
+							"\r",
+							"      var expiryDate = new Date();\r",
+							"      expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);\r",
+							"      pm.environment.set(\"accessTokenExpiry\", expiryDate.getTime());\r",
+							"\r",
+							"      pm.environment.set('env', responseJson)\r",
+							"    }\r",
+							"  });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/role/set-to-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"role",
+						"set-to-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"admin\",\r\n    \"header\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Requests\r",
+							"const echoPostRequest = {\r",
+							"  url: pm.environment.get(\"ohmyclassBaseUrl\") + \"/api/v1/auth/login\",\r",
+							"  method: \"POST\",\r",
+							"  header: \"Content-Type:application/x-www-form-urlencoded\",\r",
+							"  body: {\r",
+							"    mode: \"urlencoded\",\r",
+							"    urlencoded: [\r",
+							"      { key: \"username\", value: pm.environment.get(\"defaultUserUsername\") },\r",
+							"      { key: \"password\", value: pm.environment.get(\"defaultUserPassword\") },\r",
+							"    ],\r",
+							"  },\r",
+							"};\r",
+							"\r",
+							"getToken();\r",
+							"\r",
+							"if (pm.environment.get(\"access_token\") === null) {\r",
+							"\r",
+							"  pm.environment.get(\"variable_key\");\r",
+							"  pm.environment.get(\"variable_key\");\r",
+							"\r",
+							"  console.log(\"Token or refresh token are missing\");\r",
+							"\r",
+							"  getToken();\r",
+							"} else if (pm.environment.get(\"accessTokenExpiry\") <= new Date().getTime()) {\r",
+							"  console.log(\"Token is expired\");\r",
+							"} else {\r",
+							"  console.log(\"Token and expiry date are all good\");\r",
+							"}\r",
+							"\r",
+							"function getToken() {\r",
+							"  pm.sendRequest(echoPostRequest, function (err, res) {\r",
+							"    console.log(err ? err : res.json());\r",
+							"    if (err === null) {\r",
+							"      console.log(\"Saving the token and expiry date\");\r",
+							"      var responseJson = res.json();\r",
+							"      pm.environment.set(\"access_token\", responseJson.access_token);\r",
+							"      pm.environment.set(\"refresh_token\", responseJson.refresh_token);\r",
+							"\r",
+							"      var expiryDate = new Date();\r",
+							"      expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);\r",
+							"      pm.environment.set(\"accessTokenExpiry\", expiryDate.getTime());\r",
+							"\r",
+							"      pm.environment.set('env', responseJson)\r",
+							"    }\r",
+							"  });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/user/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
