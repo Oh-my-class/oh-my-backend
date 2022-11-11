@@ -43,12 +43,12 @@ public class UserController implements IUserController {
 	}
 
 	@Override
-	public Response<UserOutDTO> updateUser(Request<UserChangeInDTO> userChangeIn) {
+	public Response<Boolean> updateUser(UserChangeInDTO userChangeIn) {
 		return new Response<>(userService.update(userChangeIn), ValidationResult.ok());
 	}
 
 	@Override
-	public Response<Boolean> deleteUser(Request<UserInDTO> user) {
-		return new Response<>(userService.delete(user), ValidationResult.ok());
+	public Response<Boolean> deleteUser(String username) {
+		return new Response<>(userService.delete(username), ValidationResult.ok());
 	}
 }

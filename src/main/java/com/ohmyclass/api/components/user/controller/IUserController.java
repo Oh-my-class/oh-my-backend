@@ -61,10 +61,10 @@ public interface IUserController {
 	@PutMapping("/user")
 	@Operation(summary = "Edit user details in database")
 	@ApiResponse(responseCode = "200", description = "The updated user", content = {
-			@Content(mediaType = "application/json", schema = @Schema(implementation = UserOutDTO.class)) })
+			@Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class)) })
 	@ApiResponse(responseCode = "401", description = "Authentication failed")
 	@ApiResponse(responseCode = "500", description = "General server error")
-	Response<UserOutDTO> updateUser(@RequestBody Request<UserChangeInDTO> userChangeIn);
+	Response<Boolean> updateUser(@RequestBody UserChangeInDTO userChangeIn);
 
 	@Secured("ROLE_USER")
 	@DeleteMapping("/user")
@@ -73,5 +73,5 @@ public interface IUserController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class)) })
 	@ApiResponse(responseCode = "401", description = "Authentication failed")
 	@ApiResponse(responseCode = "500", description = "General server error")
-	Response<Boolean> deleteUser(@RequestBody Request<UserInDTO> user);
+	Response<Boolean> deleteUser(@RequestBody String username);
 }

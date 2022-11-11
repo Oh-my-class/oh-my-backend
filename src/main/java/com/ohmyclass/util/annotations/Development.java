@@ -1,4 +1,4 @@
-package com.ohmyclass.util.other;
+package com.ohmyclass.util.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

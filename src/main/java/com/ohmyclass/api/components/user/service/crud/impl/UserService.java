@@ -7,13 +7,14 @@ import com.ohmyclass.api.components.user.dto.in.UserChangeInDTO;
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.entity.User;
-import com.ohmyclass.api.components.user.repository.IUserRepository;
+import com.ohmyclass.api.components.user.repository.UserRepository;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
-import com.ohmyclass.api.components.user.service.mapper.AUserMapper;
-import com.ohmyclass.api.exceptions.ApiRequestException;
-import com.ohmyclass.api.util.communication.Request;
+import com.ohmyclass.api.components.user.service.mapper.UserMapper;
+import com.ohmyclass.api.components.user.service.validation.UserChangeSubmissionProcessor;
+import com.ohmyclass.api.components.user.service.validation.UserSubmissionProcessor;
+import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
-import com.ohmyclass.util.validate.Validate;
+import com.ohmyclass.util.validators.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +25,9 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -38,35 +37,28 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @AllArgsConstructor
 public class UserService implements IUserService {
 
-	private final IUserRepository userRepo;
+	private final UserRepository userRepository;
 
-	private final AUserMapper userMapper;
-
-	private final PasswordEncoder passwordEncoder;
+	private final UserMapper userMapper;
 
 	private final JwtTokenUtil tokenUtil;
 
+	private final UserSubmissionProcessor userSubmissionProcessor;
+
+	private final UserChangeSubmissionProcessor userChangeSubmissionProcessor;
+
 	@Override
-	@Transactional
 	public Map<String, String> register(UserInDTO inDTO) {
 
-		Validate.notNull( "No Payload found", inDTO);
+		userSubmissionProcessor.process(inDTO);
 
-		if (userRepo.findByUsername(inDTO.getUsername()).isPresent())
-			throw new ApiRequestException("Username already exists");
+		User persistedUser = userSubmissionProcessor.getPersistedEntity();
 
-		User user = userMapper.inDTOToEntity(inDTO);
-		user.addRole(new Role("ROLE_USER"));
-		Optional<User> user1 = saveUser(user);
-
-		if (user1.isEmpty())
-			throw new ApiRequestException("Registration failed");
-
-		List<String> roles = user.getRoles().stream()
+		List<String> roles = persistedUser.getRoles().stream()
 				.map(Role::getName)
 				.collect(Collectors.toList());
 
-		return tokenUtil.generateNewTokenMap(user.getUsername(), "Registration", roles);
+		return tokenUtil.generateNewTokenMap(persistedUser.getUsername(), "Registration", roles);
 	}
 
 	@Override
@@ -76,7 +68,7 @@ public class UserService implements IUserService {
 		// Guard
 		if (!tokenUtil.isValidBearer(authorizationHeader)) {
 
-			throw new ApiRequestException("Invalid bearer token.");
+			throw new ApiException("Invalid bearer token.");
 		}
 
 		try {
@@ -84,7 +76,7 @@ public class UserService implements IUserService {
 
 			if (tokenUtil.isTokenExpired(decodedJWT)) {
 
-				throw new ApiRequestException("Token expired. Please login again");
+				throw new ApiException("Token expired. Please login again");
 			}
 
 			String newAccessToken = createNewAccessToken(request, decodedJWT);
@@ -92,27 +84,36 @@ public class UserService implements IUserService {
 			new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
 
 		} catch (Exception e) {
-			throw new ApiRequestException("Refreshing token failed");
+			throw new ApiException("Refreshing token failed");
 		}
 	}
 
 	@Override
 	public UserOutDTO getUser(String username) {
 
-		Validate.notNull(username);
+		ObjectValidator.notNull("Supplied username was null", username);
 
-		return userMapper.entityToOutDTO(userRepo.findByUsername(username)
-				.orElseThrow(() -> new ApiRequestException("User not found")));
+		return userMapper.entityToOutDTO(userRepository.findByUsernameOrEmail(username, username)
+				.orElseThrow(() -> new ApiException("User not found")));
 	}
 
 	@Override
-	public UserOutDTO update(Request<UserChangeInDTO> userIn) {
-		return null;
+	public Boolean update(UserChangeInDTO userIn) {
+
+		return userChangeSubmissionProcessor.process(userIn).isOk();
 	}
 
 	@Override
-	public Boolean delete(Request<UserInDTO> userIn) {
-		return null;
+	public Boolean delete(String username) {
+
+		ObjectValidator.notNull("Body can not be null", username);
+
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ApiException("User not found"));
+
+		userRepository.delete(user);
+
+		return userRepository.findByUsername(username).isEmpty();
 	}
 
 	@Override
@@ -121,8 +122,8 @@ public class UserService implements IUserService {
 
 	private String createNewAccessToken(HttpServletRequest request, DecodedJWT decodedJWT) {
 
-		User user = userRepo.findByUsername(decodedJWT.getSubject())
-				.orElseThrow(() -> new ApiRequestException("User not found for token refresh"));
+		User user = userRepository.findByUsername(decodedJWT.getSubject())
+				.orElseThrow(() -> new ApiException("User not found for token refresh"));
 
 		String subject = user.getUsername();
 		String issuer = request.getRequestURI();
@@ -142,14 +143,5 @@ public class UserService implements IUserService {
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
 		return newAccessToken;
-	}
-
-	private Optional<User> saveUser(User user) {
-
-		log.info("Saving user {}", user.getUsername());
-
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-		return Optional.of(userRepo.save(user));
 	}
 }

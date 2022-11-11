@@ -5,11 +5,10 @@ import com.ohmyclass.api.components.role.dto.in.RoleInDTO;
 import com.ohmyclass.api.components.role.entity.Role;
 import com.ohmyclass.api.components.role.repository.IRoleRepository;
 import com.ohmyclass.api.components.user.entity.User;
-import com.ohmyclass.api.components.user.repository.IUserRepository;
+import com.ohmyclass.api.components.user.repository.UserRepository;
 import com.ohmyclass.api.util.communication.Request;
 import com.ohmyclass.api.util.communication.Response;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class RoleController implements IRoleController {
 	}
 
 	private final IRoleRepository roleRepository;
-	private final IUserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	public Response<Boolean> setRoleToUser(String username) {

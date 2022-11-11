@@ -1,7 +1,7 @@
 package com.ohmyclass.security.filters;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.ohmyclass.api.exceptions.ApiRequestException;
+import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.server.properties.JwtConstants;
 import lombok.extern.log4j.Log4j2;
@@ -62,7 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		// Guard
 		if (!tokenUtil.isValidBearer(authorizationHeader)) {
 
-			throw new ApiRequestException("Invalid bearer token");
+			throw new ApiException("Invalid bearer token");
 		}
 
 		createSessionFrom(authorizationHeader);
@@ -77,7 +77,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		try {
 			decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
 		} catch (Exception e) {
-			throw new ApiRequestException("Invalid token");
+			throw new ApiException("Invalid token");
 		}
 
 		String username = decodedJWT.getSubject();

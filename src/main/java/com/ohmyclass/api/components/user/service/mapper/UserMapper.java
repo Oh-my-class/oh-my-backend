@@ -6,9 +6,10 @@ import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.entity.User;
 import com.sun.istack.NotNull;
 import org.mapstruct.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Mapper(componentModel = "spring", uses = APreferencesMapper.class)
-public abstract class AUserMapper {
+public abstract class UserMapper {
 
 	@Mapping(source = "preferences", target = "preferencesOut")
 	public abstract UserOutDTO entityToOutDTO(@NotNull User user);

@@ -22,10 +22,10 @@ import java.time.ZonedDateTime;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = { ApiRequestException.class })
+	@ExceptionHandler(value = { ApiException.class })
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
+	public ResponseEntity<Object> handleApiRequestException(ApiException e) {
 
 		ApiError error = new ApiError(
 				e.getMessage(),

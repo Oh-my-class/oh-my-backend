@@ -1,7 +1,7 @@
 package com.ohmyclass.security.services;
 
 import com.ohmyclass.api.components.user.entity.User;
-import com.ohmyclass.api.components.user.repository.IUserRepository;
+import com.ohmyclass.api.components.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
-	private final IUserRepository userRepo;
+	private final UserRepository userRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
