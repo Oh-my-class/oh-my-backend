@@ -10,8 +10,8 @@ import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.UserRepository;
 import com.ohmyclass.api.components.user.service.crud.IUserService;
 import com.ohmyclass.api.components.user.service.mapper.UserMapper;
-import com.ohmyclass.api.components.user.service.validation.UserChangeSubmissionProcessor;
-import com.ohmyclass.api.components.user.service.validation.UserSubmissionProcessor;
+import com.ohmyclass.api.components.user.service.processors.UserChangeSubmissionProcessor;
+import com.ohmyclass.api.components.user.service.processors.UserSubmissionProcessor;
 import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.util.validators.*;
@@ -20,14 +20,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;

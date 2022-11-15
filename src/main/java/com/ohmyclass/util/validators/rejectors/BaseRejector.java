@@ -1,6 +1,6 @@
 package com.ohmyclass.util.validators.rejectors;
 
-import com.ohmyclass.util.validators.other.Outcome;
+import com.ohmyclass.util.validators.other.types.Outcome;
 import com.ohmyclass.util.validators.Pass;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
 import lombok.AllArgsConstructor;

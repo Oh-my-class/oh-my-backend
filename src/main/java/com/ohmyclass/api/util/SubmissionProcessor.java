@@ -1,4 +1,4 @@
-package com.ohmyclass.api.components.user.service.validation;
+package com.ohmyclass.api.util;
 
 import com.ohmyclass.api.util.validation.ValidationResult;
 

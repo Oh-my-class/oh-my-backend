@@ -1,9 +1,11 @@
-package com.ohmyclass.api.components.user.service.validation;
+package com.ohmyclass.api.components.user.service.processors;
 
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.entity.User;
 import com.ohmyclass.api.components.user.repository.UserRepository;
 import com.ohmyclass.api.components.user.service.mapper.UserMapper;
+import com.ohmyclass.api.util.SubmissionProcessor;
+import com.ohmyclass.api.components.user.service.validation.UserSubmissionValidator;
 import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.api.util.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;

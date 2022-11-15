@@ -1,4 +1,4 @@
-package com.ohmyclass.util.validators.other;
+package com.ohmyclass.util.validators.other.types;
 
 public enum Outcome {
 	ACCEPT, REJECT;

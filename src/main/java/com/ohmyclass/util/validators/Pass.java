@@ -2,10 +2,10 @@ package com.ohmyclass.util.validators;
 
 import com.ohmyclass.api.util.validation.ValidationResult;
 import com.ohmyclass.api.util.validation.http.ValidationStatus;
-import com.ohmyclass.util.validators.collectors.LocationCollector;
+import com.ohmyclass.util.validators.collectors.FieldCollector;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
-import com.ohmyclass.util.validators.other.Outcome;
-import com.ohmyclass.util.validators.other.ValidationLocation;
+import com.ohmyclass.util.validators.other.types.Outcome;
+import com.ohmyclass.util.validators.other.ValidationField;
 import com.ohmyclass.util.validators.other.ValidationReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,11 +16,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pass implements ReasonCollector, LocationCollector {
+public class Pass implements ReasonCollector, FieldCollector {
 
 	ValidationReason reason;
 
-	ValidationLocation location;
+	ValidationField location;
 
 	Outcome outcome;
 
@@ -29,27 +29,26 @@ public class Pass implements ReasonCollector, LocationCollector {
 	}
 
 	@Override
-	public ReasonCollector location(ValidationLocation location) {
+	public ReasonCollector field(ValidationField location) {
 		this.location = location;
 		return this;
 	}
 
 	@Override
-	public LocationCollector reason(ValidationReason reason) {
+	public FieldCollector reason(ValidationReason reason) {
 		this.reason = reason;
 		return this;
 	}
 
-	public Outcome finish(ValidationResult validationResult) {
+	public void finish(ValidationResult validationResult) {
 
 		if (this.outcome == null) {
 			throw new RuntimeException("Pass outcome is null");
 		}
 
 		if (this.outcome.isReject()) {
-			validationResult.add(ValidationStatus.ERROR, this.reason.getReason(), this.location.getLocation());
+			validationResult.add(ValidationStatus.ERROR, this.reason.getReason(), this.location.getField());
 		}
 
-		return this.outcome;
 	}
 }

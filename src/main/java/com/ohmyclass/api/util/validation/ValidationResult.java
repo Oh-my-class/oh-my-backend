@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class ValidationResult {
 
-
 	private ValidationStatus status;
 
 	private Set<ValidationResultEntry> infos = new HashSet<>();
