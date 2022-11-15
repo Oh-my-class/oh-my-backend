@@ -1,4 +1,4 @@
-package com.ohmyclass.util.validators.other;
+package com.ohmyclass.util.validators.types;
 
 public interface ValidationField {
 

@@ -2,10 +2,13 @@ package com.ohmyclass.util.validators.rejectors;
 
 import com.ohmyclass.util.validators.Pass;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
-import org.apache.tomcat.util.file.Matcher;
 
 import java.util.regex.Pattern;
 
+/**
+ * Rejector to validate entered Strings
+ * @author Z-100
+ */
 public class StringRejector extends BaseRejector<String> {
 
 	public StringRejector(Pass pass, String entry) {

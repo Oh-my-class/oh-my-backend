@@ -21,18 +21,18 @@ public class UserSubmissionValidator implements ValidatorBase<UserInDTO> {
 				.finish(validationResult);
 
 		Validator.reject(user.getEmail()).ifEmpty()
-				.reason(UserValidationReason.USERNAME_NULL)
-				.field(UserValidationField.USERNAME)
+				.reason(UserValidationReason.EMAIL_NULL)
+				.field(UserValidationField.EMAIL)
 				.finish(validationResult);
 
 		Validator.reject(user.getPassword()).ifEmpty()
-				.reason(UserValidationReason.USERNAME_NULL)
-				.field(UserValidationField.USERNAME)
+				.reason(UserValidationReason.PASSWORD_NULL)
+				.field(UserValidationField.PASSWORD)
 				.finish(validationResult);
 
 		Validator.reject(user.getPassword()).ifPasswordInvalid()
 				.reason(UserValidationReason.PASSWORD_INVALID)
-				.field(UserValidationField.USERNAME)
+				.field(UserValidationField.PASSWORD)
 				.finish(validationResult);
 
 		return validationResult;

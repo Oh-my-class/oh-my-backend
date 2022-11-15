@@ -3,6 +3,10 @@ package com.ohmyclass.util.validators.rejectors;
 import com.ohmyclass.util.validators.Pass;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
 
+/**
+ * Rejector to validate entered Booleans
+ * @author Z-100
+ */
 public class BooleanRejector extends BaseRejector<Boolean> {
 
 	public BooleanRejector(Pass pass, Boolean entry) {

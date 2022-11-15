@@ -1,6 +1,8 @@
 package com.ohmyclass.api.util;
 
-//TODO Do some sort of cfg
+import com.ohmyclass.util.annotations.Development;
+
+@Development
 public class ApiConst {
 
 	// ? Account

@@ -1,4 +1,4 @@
-package com.ohmyclass.api.util.validation.http;
+package com.ohmyclass.api.util.validation.types;
 
 import lombok.Getter;
 

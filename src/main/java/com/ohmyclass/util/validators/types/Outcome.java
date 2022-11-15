@@ -1,5 +1,9 @@
-package com.ohmyclass.util.validators.other.types;
+package com.ohmyclass.util.validators.types;
 
+/**
+ * Determines if the validation was successful or not
+ * @author Z-100
+ */
 public enum Outcome {
 	ACCEPT, REJECT;
 

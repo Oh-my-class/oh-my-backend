@@ -1,12 +1,16 @@
 package com.ohmyclass.util.validators.rejectors;
 
-import com.ohmyclass.util.validators.other.types.Outcome;
+import com.ohmyclass.util.validators.types.Outcome;
 import com.ohmyclass.util.validators.Pass;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Rejector to validate entered Objects, which do not have their own rejector yet.
+ * @author Z-100
+ */
 @Getter
 @Setter
 @AllArgsConstructor

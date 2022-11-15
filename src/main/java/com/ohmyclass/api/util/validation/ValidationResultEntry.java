@@ -1,9 +1,7 @@
 package com.ohmyclass.api.util.validation;
 
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
-import lombok.AllArgsConstructor;
+import com.ohmyclass.api.util.validation.types.ValidationStatus;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;

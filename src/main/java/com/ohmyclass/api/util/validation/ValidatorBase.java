@@ -1,7 +1,9 @@
 package com.ohmyclass.api.util.validation;
 
-import com.ohmyclass.api.util.validation.ValidationResult;
-
+/**
+ * Base of a {@link com.ohmyclass.api.util.SubmissionProcessor}-validator
+ * @param <T> Type of to be passed object
+ */
 public interface ValidatorBase<T> {
 
 	ValidationResult validate(T t);

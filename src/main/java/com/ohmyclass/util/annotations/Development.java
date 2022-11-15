@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  * Remove in releases!
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
 public @interface Development {
 }

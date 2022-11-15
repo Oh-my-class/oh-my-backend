@@ -7,6 +7,10 @@ import com.ohmyclass.util.validators.rejectors.IntegerRejector;
 import com.ohmyclass.util.validators.rejectors.StringRejector;
 import org.springframework.stereotype.Component;
 
+/**
+ * Extendable reject-validator. See {@link BaseRejector}
+ * @author z-100
+ */
 @Component
 public class Validator {
 

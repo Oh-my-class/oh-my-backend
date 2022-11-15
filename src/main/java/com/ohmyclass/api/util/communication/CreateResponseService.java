@@ -1,7 +1,7 @@
 package com.ohmyclass.api.util.communication;
 
 import com.ohmyclass.api.util.validation.ValidationResult;
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
+import com.ohmyclass.api.util.validation.types.ValidationStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

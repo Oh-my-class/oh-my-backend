@@ -5,6 +5,10 @@ import com.ohmyclass.api.exceptions.ApiException;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Validates objects of type <T>
+ * @author Z-100
+ */
 public class ObjectValidator {
 
 	@SafeVarargs

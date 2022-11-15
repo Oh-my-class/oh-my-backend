@@ -1,6 +1,6 @@
 package com.ohmyclass.api.util.validation;
 
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
+import com.ohmyclass.api.util.validation.types.ValidationStatus;
 
 import java.util.Arrays;
 import java.util.HashSet;

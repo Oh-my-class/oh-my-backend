@@ -1,17 +1,18 @@
 package com.ohmyclass.util.validators;
 
 import com.ohmyclass.api.util.validation.ValidationResult;
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
+import com.ohmyclass.api.util.validation.types.ValidationStatus;
 import com.ohmyclass.util.validators.collectors.FieldCollector;
 import com.ohmyclass.util.validators.collectors.ReasonCollector;
-import com.ohmyclass.util.validators.other.types.Outcome;
-import com.ohmyclass.util.validators.other.ValidationField;
-import com.ohmyclass.util.validators.other.ValidationReason;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.ohmyclass.util.validators.types.Outcome;
+import com.ohmyclass.util.validators.types.ValidationField;
+import com.ohmyclass.util.validators.types.ValidationReason;
+import lombok.*;
 
+/**
+ * Pass, passed by the rejectors in order to determine the {@link Outcome}
+ * @author Z-100
+ */
 @Getter
 @Setter
 @AllArgsConstructor
