@@ -5,7 +5,7 @@ version: '3.1'
 
 services:
   db:
-    image: mariadb:10.9.3
+    image: mariadb:latest
     ports:
       - 3307:3306
     environment:
@@ -14,19 +14,16 @@ services:
       MYSQL_DATABASE: ohmyclass
     volumes:
       - db:/var/lib/mysql
-    command: --init-file ./data/application/ohmyclass-init.sql
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin:latest
     container_name: phpmyadmin
     restart: always
     ports:
       - 8000:80
     environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST:mariadb
-      - MYSQL_ROOT_USERNAME=root
-      - MYSQL_ROOT_PASSWORD=root
+      PMA_USER: root
+      PMA_PASSWORD: root
 
 volumes:
   db:
