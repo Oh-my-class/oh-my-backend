@@ -5,13 +5,16 @@ version: '3.1'
 
 services:
   db:
-    image: mariadb
+    image: mariadb:10.9.3
     ports:
       - 3307:3306
     environment:
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ohmyclass
     volumes:
-      - db:/var/lib/mysql
+      - ./ohmyclass-init.sql:./data/application/ohmyclass-init.sql
+    command: --init-file ./data/application/ohmyclass-init.sql
 
   phpmyadmin:
     image: phpmyadmin
