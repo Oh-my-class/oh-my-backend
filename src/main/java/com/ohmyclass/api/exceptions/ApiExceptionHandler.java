@@ -40,6 +40,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(error);
 	}
 
+	@ExceptionHandler(value = { Exception.class })
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<Object> handleGeneralException(Exception e) {
+
+		ApiError error = new ApiError(
+				e.getMessage(),
+				HttpStatus.BAD_REQUEST,
+				null,
+				ZonedDateTime.now(ZoneId.of("Z"))
+		);
+
+		//		ValidationResult validationResult = ValidationResult.ok();
+		//		validationResult.add(error.toValidationResultEntry());
+
+		return buildResponseEntity(error);
+	}
+
+
 	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
 
 		return new ResponseEntity<>(apiError, apiError.status());

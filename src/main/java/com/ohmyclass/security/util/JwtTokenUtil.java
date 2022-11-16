@@ -5,7 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ohmyclass.api.components.role.entity.Role;
+import com.ohmyclass.api.components.user.entity.User;
+import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.server.properties.JwtConstants;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -14,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Util to handle JWT tokens
@@ -63,9 +70,20 @@ public class JwtTokenUtil {
 				.sign(algorithm());
 	}
 
+	public String generateNewAccessToken(User user) {
+
+		String subject = user.getUsername();
+		String issuer = "/api/auth/refresh-token";
+		List<String> rolesClaim = user.getRoles().stream()
+				.map(Role::getName)
+				.collect(Collectors.toList());
+
+		return generateNewAccessToken(subject, issuer, rolesClaim);
+	}
+
 	public String getUsernameFromToken(DecodedJWT token) {
 
-		return token.getSignature();
+		return token.getSubject();
 	}
 
 	public Date getExpirationDateFromToken(DecodedJWT token) {
@@ -73,16 +91,30 @@ public class JwtTokenUtil {
 		return token.getExpiresAt();
 	}
 
-	public boolean isTokenExpired(DecodedJWT token) {
+	public void validateTokenExpiration(DecodedJWT token) {
 
 		final Date expiration = getExpirationDateFromToken(token);
 
-		return expiration.before(new Date());
+		if (expiration.after(new Date()))
+			throw new ApiException("Token expired. Please login again");
 	}
 
-	public boolean isValidBearer(String token) {
+	public void validateBearer(String token) {
 
-		return token != null && token.startsWith(constants.getTokenPrefix());
+		if (token != null && token.startsWith(constants.getTokenPrefix()))
+			throw new ApiException("Invalid bearer token");
+	}
+
+	public void addNewTokenToSecurity(User user) {
+
+		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName()))
+				.collect(Collectors.toList());
+
+		UsernamePasswordAuthenticationToken authenticationToken =
+				new UsernamePasswordAuthenticationToken(user.getUsername(), null, authorities);
+
+		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 	}
 
 	private Map<String, Claim> getAllClaimsFromToken(DecodedJWT token) {

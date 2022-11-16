@@ -57,28 +57,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		String authorizationHeader = request.getHeader(AUTHORIZATION);
-
-		// Guard
-		if (!tokenUtil.isValidBearer(authorizationHeader)) {
-
-			throw new ApiException("Invalid bearer token");
-		}
-
-		createSessionFrom(authorizationHeader);
+		createSessionFrom(request.getHeader(AUTHORIZATION));
 
 		filterChain.doFilter(request, response);
 	}
 
 	private void createSessionFrom(String authorizationHeader) {
 
-		DecodedJWT decodedJWT;
+		tokenUtil.validateBearer(authorizationHeader);
 
-		try {
-			decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
-		} catch (Exception e) {
-			throw new ApiException("Invalid token");
-		}
+		DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+
+		tokenUtil.validateTokenExpiration(decodedJWT);
 
 		String username = decodedJWT.getSubject();
 		String[] roles = decodedJWT.getClaim(constants.getClaims().get("roles")).asArray(String.class);

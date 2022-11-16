@@ -16,10 +16,6 @@ import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.util.validators.*;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +26,6 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Log4j2
 @Component
 @AllArgsConstructor
 public class UserService implements IUserService {
@@ -61,29 +56,27 @@ public class UserService implements IUserService {
 
 	@Override
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-		// Guard
-		if (!tokenUtil.isValidBearer(authorizationHeader)) {
+		tokenUtil.validateBearer(authorizationHeader);
 
-			throw new ApiException("Invalid bearer token.");
-		}
+		DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+
+		tokenUtil.validateTokenExpiration(decodedJWT);
+
+		User user = userRepository.findByUsername(decodedJWT.getSubject())
+				.orElseThrow(() -> new ApiException("User not found from token refresh"));
+
+		String newAccessToken = tokenUtil.generateNewAccessToken(user);
 
 		try {
-			DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
-
-			if (tokenUtil.isTokenExpired(decodedJWT)) {
-
-				throw new ApiException("Token expired. Please login again");
-			}
-
-			String newAccessToken = createNewAccessToken(request, decodedJWT);
-
 			new ObjectMapper().writeValue(response.getOutputStream(), newAccessToken);
-
 		} catch (Exception e) {
 			throw new ApiException("Refreshing token failed");
 		}
+
+		tokenUtil.addNewTokenToSecurity(user);
 	}
 
 	@Override
@@ -116,30 +109,5 @@ public class UserService implements IUserService {
 
 	@Override
 	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
-	}
-
-	private String createNewAccessToken(HttpServletRequest request, DecodedJWT decodedJWT) {
-
-		User user = userRepository.findByUsername(decodedJWT.getSubject())
-				.orElseThrow(() -> new ApiException("User not found for token refresh"));
-
-		String subject = user.getUsername();
-		String issuer = request.getRequestURI();
-		List<String> rolesClaim = user.getRoles().stream()
-				.map(Role::getName)
-				.collect(Collectors.toList());
-
-		String newAccessToken = tokenUtil.generateNewAccessToken(subject, issuer, rolesClaim);
-
-		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getName()))
-				.collect(Collectors.toList());
-
-		UsernamePasswordAuthenticationToken authenticationToken =
-				new UsernamePasswordAuthenticationToken(user.getUsername(), null, authorities);
-
-		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-		return newAccessToken;
 	}
 }
