@@ -7,20 +7,20 @@ import lombok.Getter;
  *
  * @author z-100
  */
-public class ApiRequestException extends RuntimeException {
+public class ApiException extends RuntimeException {
 
 	@Getter
 	private String message;
 
-	public ApiRequestException() {
+	public ApiException() {
 		super();
 	}
 
-	public ApiRequestException(String message) {
+	public ApiException(String message) {
 		this.message = message;
 	}
 
-	public ApiRequestException(String message, Throwable cause) {
+	public ApiException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

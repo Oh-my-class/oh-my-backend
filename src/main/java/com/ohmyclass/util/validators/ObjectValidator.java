@@ -1,21 +1,25 @@
-package com.ohmyclass.util.validate;
+package com.ohmyclass.util.validators;
 
-import com.ohmyclass.api.exceptions.ApiRequestException;
+import com.ohmyclass.api.exceptions.ApiException;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Validate {
+/**
+ * Validates objects of type <T>
+ * @author Z-100
+ */
+public class ObjectValidator {
 
 	@SafeVarargs
 	public static <T> void notNull(T... t) {
 		if (Arrays.stream(t).anyMatch(Objects::isNull))
-			throw new ApiRequestException();
+			throw new ApiException();
 	}
 
 	@SafeVarargs
 	public static <T> void notNull(String message, T... t) {
 		if (Arrays.stream(t).anyMatch(Objects::isNull))
-			throw new ApiRequestException(message);
+			throw new ApiException(message);
 	}
 }

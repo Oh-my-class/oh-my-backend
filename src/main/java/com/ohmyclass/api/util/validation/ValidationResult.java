@@ -1,13 +1,12 @@
 package com.ohmyclass.api.util.validation;
 
-import com.ohmyclass.api.util.validation.http.ValidationStatus;
+import com.ohmyclass.api.util.validation.types.ValidationStatus;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ValidationResult {
-
 
 	private ValidationStatus status;
 

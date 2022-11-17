@@ -1,7 +1,7 @@
 package com.ohmyclass.security.filters;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.ohmyclass.api.exceptions.ApiRequestException;
+import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.server.properties.JwtConstants;
 import lombok.extern.log4j.Log4j2;
@@ -57,28 +57,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		String authorizationHeader = request.getHeader(AUTHORIZATION);
-
-		// Guard
-		if (!tokenUtil.isValidBearer(authorizationHeader)) {
-
-			throw new ApiRequestException("Invalid bearer token");
-		}
-
-		createSessionFrom(authorizationHeader);
+		createSessionFrom(request.getHeader(AUTHORIZATION));
 
 		filterChain.doFilter(request, response);
 	}
 
 	private void createSessionFrom(String authorizationHeader) {
 
-		DecodedJWT decodedJWT;
+		tokenUtil.validateBearer(authorizationHeader);
 
-		try {
-			decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
-		} catch (Exception e) {
-			throw new ApiRequestException("Invalid token");
-		}
+		DecodedJWT decodedJWT = tokenUtil.extractBearer.apply(authorizationHeader);
+
+		tokenUtil.validateTokenExpiration(decodedJWT);
 
 		String username = decodedJWT.getSubject();
 		String[] roles = decodedJWT.getClaim(constants.getClaims().get("roles")).asArray(String.class);

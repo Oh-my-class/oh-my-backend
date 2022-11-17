@@ -1,4 +1,4 @@
-package com.ohmyclass.util.other;
+package com.ohmyclass.util.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  * Remove in releases!
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
 public @interface Development {
 }
