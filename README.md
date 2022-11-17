@@ -31,6 +31,7 @@ A web-app built with React, TypeScript and lots of love! :heart:
 3. Or: Feel free to use any MySQL database
    - Just make sure it's running on `___:3306`
    - If this is not the case, edit the `spring.datasource.url` to match your port in the`application.yml` file
+4. Create a database table called 'ohmyclass'
 
 #### 3. Start OhMyClass.Application
 
