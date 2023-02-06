@@ -30,3 +30,6 @@ build/
 
 ### Custom ###
 .env.*
+
+### VS Code ###
+.vscode/settings.json
