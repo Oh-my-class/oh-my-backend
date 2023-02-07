@@ -9,7 +9,7 @@ import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 
 @Getter
@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "group")
 public class Group {
-    @Id
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
@@ -31,9 +31,7 @@ public class Group {
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Subject> subjects;
 
-	@OneToMany(cascade = {CascadeType.ALL},
-			orphanRemoval = true,
-			mappedBy = "group")
+	@OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "group")
 	@JsonBackReference
 	private Set<Task> tasks;
 
@@ -42,7 +40,7 @@ public class Group {
 	@JsonManagedReference
 	private User user;
 
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	private Set<Role>  roles;
-    
+	// @ManyToMany(fetch = FetchType.LAZY)
+	// private Set<Role> roles;
+
 }

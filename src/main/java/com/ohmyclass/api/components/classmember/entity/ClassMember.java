@@ -1,4 +1,5 @@
 package com.ohmyclass.api.components.classmember.entity;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ohmyclass.api.components.group.entity.Group;
 import lombok.Getter;
@@ -6,7 +7,7 @@ import lombok.Setter;
 
 import java.util.Set;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.ohmyclass.api.components.user.entity.User;
 
@@ -16,7 +17,7 @@ import com.ohmyclass.api.components.user.entity.User;
 @Table(name = "classmember")
 public class ClassMember {
 
-    @Id
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
@@ -29,7 +30,7 @@ public class ClassMember {
 	@JsonManagedReference
 	private Group group;
 
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	private List<Role> roles;
+	// @ManyToMany(fetch = FetchType.LAZY)
+	// private List<Role> roles;
 
 }

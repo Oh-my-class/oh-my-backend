@@ -4,9 +4,8 @@ import com.ohmyclass.api.components.preferences.service.mapper.APreferencesMappe
 import com.ohmyclass.api.components.user.dto.in.UserInDTO;
 import com.ohmyclass.api.components.user.dto.out.UserOutDTO;
 import com.ohmyclass.api.components.user.entity.User;
-import com.sun.istack.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.mapstruct.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Mapper(componentModel = "spring", uses = APreferencesMapper.class)
 public abstract class UserMapper {
