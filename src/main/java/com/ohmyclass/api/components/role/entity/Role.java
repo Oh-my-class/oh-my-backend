@@ -5,15 +5,15 @@ import com.ohmyclass.api.components.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.util.List;
 
 @Getter
@@ -22,9 +22,9 @@ import java.util.List;
 @Table(name = "role")
 public class Role {
 
-  public Role() {}
-  
-  public Role(String name) {
+	public Role() {}
+
+	public Role(String name) {
 		this.name = name;
 	}
 
@@ -45,8 +45,11 @@ public class Role {
 	@JsonManagedReference
 	private User user;
 
-	/*	@ManyToOne
-	@JoinColumn(name = "fkGroup")
-	@JsonManagedReference
-	private Group fkGroup;*/
+	/*
+	 * @ManyToOne
+	 * 
+	 * @JoinColumn(name = "fkGroup")
+	 * 
+	 * @JsonManagedReference private Group fkGroup;
+	 */
 }

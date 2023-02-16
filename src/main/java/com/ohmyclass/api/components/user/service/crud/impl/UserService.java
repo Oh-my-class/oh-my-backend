@@ -18,8 +18,8 @@ import com.ohmyclass.util.validators.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,9 +47,8 @@ public class UserService implements IUserService {
 
 		User persistedUser = userSubmissionProcessor.getPersistedEntity();
 
-		List<String> roles = persistedUser.getRoles().stream()
-				.map(Role::getName)
-				.collect(Collectors.toList());
+		List<String> roles =
+				persistedUser.getRoles().stream().map(Role::getName).collect(Collectors.toList());
 
 		return tokenUtil.generateNewTokenMap(persistedUser.getUsername(), "Registration", roles);
 	}
@@ -108,6 +107,5 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
-	}
+	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {}
 }

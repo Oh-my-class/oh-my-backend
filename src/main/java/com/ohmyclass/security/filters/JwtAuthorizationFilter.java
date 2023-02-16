@@ -1,20 +1,18 @@
 package com.ohmyclass.security.filters;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.ohmyclass.api.exceptions.ApiException;
 import com.ohmyclass.security.util.JwtTokenUtil;
 import com.ohmyclass.server.properties.JwtConstants;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  *
  * @author z-100
  */
-@Log4j2
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -37,8 +34,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 	private JwtConstants constants;
 
-	private final Predicate<String> isUnprotectedUrl = (req) ->
-			constants.getUriwhitelist().stream().anyMatch(req::contains);
+	private final Predicate<String> isUnprotectedUrl =
+			(req) -> constants.getUriwhitelist().stream().anyMatch(req::contains);
 
 
 	public JwtAuthorizationFilter(JwtTokenUtil tokenUtil, JwtConstants constants) {
@@ -54,8 +51,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+			FilterChain filterChain) throws ServletException, IOException {
 
 		createSessionFrom(request.getHeader(AUTHORIZATION));
 
@@ -73,9 +70,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		String username = decodedJWT.getSubject();
 		String[] roles = decodedJWT.getClaim(constants.getClaims().get("roles")).asArray(String.class);
 
-		List<SimpleGrantedAuthority> authorities = roles != null ? Stream.of(roles)
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList()) : new ArrayList<>();
+		List<SimpleGrantedAuthority> authorities = roles != null
+				? Stream.of(roles).map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+				: new ArrayList<>();
 
 		UsernamePasswordAuthenticationToken authenticationToken =
 				new UsernamePasswordAuthenticationToken(username, null, authorities);
